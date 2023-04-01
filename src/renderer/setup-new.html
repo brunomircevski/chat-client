@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Create new account - Encrypted chat</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+  <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/setup-new.js"></script>
+
+</head>
+
+<body>
+  <div class="container text-light">
+    <div class="vh-100 d-flex align-items-center justify-content-center">
+      <div class="col-xl-6 col-md-8 col-sm-10">
+        <div class="row mb-4">
+          <h1 class="h1 text-center">Create new account</h1>
+        </div>
+        <div class="row text-muted-light" id="firstStepDiv">
+          <div>
+            <p>It's time to generate your 24-word passphrase.</p>
+            <p>Your 24-word phrase is a unique combination of words that acts as a backup for your account. It's essential that you keep these words safe and secure, as they can be used to restore your account in case of loss or damage. Never share your phrase with anyone, and make sure to store it in a safe and private location.</p>
+          </div>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-success btn-lg" id="firstStepBtn">Generate passphrase</button>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="secondStepDiv" style="display: none;">
+          <div>
+            <p>This is your 24-word passphrase. Save it in a secure place.</p>
+            <p id="passphraseBox"></p>
+          </div>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-success btn-lg" id="secondStepBtn">Next</button>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="thirdStepDiv" style="display: none;">
+          <div>
+            <p>Input your 24-word passphrase here to confirm that you saved it.</p>
+            <textarea id="passphraseCheckInput" class="form-control"></textarea>
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="thirdStepBtn">Check passphrase</button>
+          </div>
+          <div id="thirdStepErrorMsg" style="display: none">
+            <span class="text-warning text-center">Wrong passphrase. Try again.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="fourthStepDiv" style="display: none;">
+          <div>
+            <p>If you set an app password you will need to provide it every time you open this app. It is used to encrypt your private key. To skip it leave both password inputs blank.</p>
+          </div>
+          <div class="form-group">
+            <label for="appPassword">App password (optional)</label>
+            <input type="password" class="form-control text-input-dark mb-3" id="appPassword">
+            <label for="repeatAppPassword">Repeat password (optional)</label>
+            <input type="password" class="form-control text-input-dark" id="repeatAppPassword">
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="fourthStepBtn">Set password</button>
+          </div>
+          <div>
+            <span class="text-warning text-center" id="fourthStepErrorMsg" style="display: none">Error.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="fifthStepDiv" style="display: none;">
+          <div>
+            <p>Choose your public username. After this step app will contact your server do create your account.</p>
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control text-input-dark mb-3" id="username">
+          </div>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-success btn-lg" id="fifthStepBtnSkip">Create account</button>
+          </div>
+          <div>
+            <span class="text-warning text-center" id="fifthStepErrorMsg" style="display: none">Error.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

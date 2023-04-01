@@ -1,0 +1,25 @@
+:root {
+  --bg-dark: #202125;
+  --bg-lighter: #252630;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+}
+.text-muted-light {
+  color: #cccccc;
+}
+#passphraseCheckInput {
+  background-color: var(--bg-lighter);
+  outline: none;
+  border: 1px solid #cccccc;
+  color: #cccccc;
+  resize: none;
+  height: 100px;
+}
+.text-input-dark, .text-input-dark:focus {
+  background-color: var(--bg-lighter);
+  outline: none;
+  border: 1px solid #cccccc;
+  color: #cccccc;
+}

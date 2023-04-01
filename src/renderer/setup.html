@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>App setup - Encrypted chat</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+  <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/setup.js"></script>
+</head>
+
+<body>
+  <div class="container text-light">
+    <div class="vh-100 d-flex align-items-center justify-content-center">
+      <div>
+        <div class="row mb-3">
+          <h1 class="h1 text-center">Setup the app</h1>
+        </div>
+        <div class="row mb-3">
+          <div class="form-group">
+            <label for="serverAddress">Server address</label>
+            <input type="text" class="form-control text-input-dark" id="serverAddress" placeholder="https://">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div>
+            <button class="btn btn-outline-light btn-lg me-2" id="createNewAccountBtn">Create new account</button>
+            <button class="btn btn-outline-light btn-lg" id="restoreYourAccountBtn">Restore your account</button>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="spinner-border text-light text-center" role="status" id="spinner" style="display: none">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="row">
+          <div id="errorMsg" style="display: none">
+            <span class="text-warning text-center">Could not connect to the server.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
