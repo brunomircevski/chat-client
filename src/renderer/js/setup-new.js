@@ -1,5 +1,6 @@
 const Store = require('electron-store');
 const bip39 = require('bip39');
+const forge = require('node-forge');
 
 const store = new Store();
 
@@ -20,6 +21,7 @@ const passphraseCheckInput = document.getElementById("passphraseCheckInput");
 
 const thirdStepErrorMsg = document.getElementById("thirdStepErrorMsg");
 const fourthStepErrorMsg = document.getElementById("fourthStepErrorMsg");
+const fifthStepErrorMsg = document.getElementById("fifthStepErrorMsg");
 
 const usernameInput = document.getElementById("username");
 const appPasswordInput = document.getElementById("appPassword");
@@ -45,7 +47,7 @@ secondStepBtn.addEventListener("click", () => {
 thirdStepBtn.addEventListener("click", () => {
     const userInput = passphraseCheckInput.value.trim();
 
-    if(userInput == mnemonic) {
+    if (userInput == mnemonic) {
         thirdStepDiv.style.display = "none";
         fourthStepDiv.style.display = "block";
     } else {
@@ -57,26 +59,62 @@ fourthStepBtn.addEventListener("click", () => {
     const password1 = appPasswordInput.value;
     const password2 = repeatAppPasswordInput.value;
 
-    if(password1?.length != 0) {
+    store.clear('usingAppPassword');
 
-        if(password1.length < 6) {
+    if (password1?.length != 0) {
+
+        if (password1.length < 6) {
             fourthStepErrorMsg.innerText = "Password must be at least 6 characters long.";
             fourthStepErrorMsg.style.display = "inline";
             return;
-        } 
-    
-        if(password1 != password2) {
+        }
+
+        if (password1 != password2) {
             fourthStepErrorMsg.innerText = "Passwords are not the same.";
             fourthStepErrorMsg.style.display = "inline";
             return;
         }
 
         appPassword = password1;
+        store.set('usingAppPassword', 'true');
     }
 
     fourthStepDiv.style.display = "none";
     fifthStepDiv.style.display = "block";
+
+    generateKeys();
 });
+
+const generateKeys = async () => {
+    if (!bip39.validateMnemonic(mnemonic)) {
+        return;
+    }
+
+    const seed = (await bip39.mnemonicToSeed(mnemonic)).toString('hex');
+
+    const prng = forge.random.createInstance();
+    prng.seedFileSync = () => seed;
+
+    const { privateKey, publicKey } = forge.pki.rsa.generateKeyPair({ bits: 2048, prng, workers: 2 })
+
+    const publicKeyPem = forge.pki.publicKeyToPem(publicKey);
+    store.set('publicKey', publicKeyPem);
+
+    if (store.get('usingAppPassword')) {
+        const derivedKey = forge.pkcs5.pbkdf2(appPassword, '', 10000, 32);
+
+        const encryptedPrivateKeyPem = forge.pki.encryptRsaPrivateKey(privateKey, derivedKey, {
+            algorithm: 'aes256',
+        });
+
+        store.set('privateKey', encryptedPrivateKeyPem);
+
+    } else {
+        const privateKeyPem = forge.pki.privateKeyToPem(privateKey);
+        store.set('privateKey', privateKeyPem);
+    }
+
+};
 
 //Hide error on input focus
 passphraseCheckInput.addEventListener('focus', () => { thirdStepErrorMsg.style.display = "none"; });
