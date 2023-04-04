@@ -1,15 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Unlock the app</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css" />
-    <script defer src="js/bootstrap.bundle.min.js"></script>
-  </head>
-  <body>
-    <h1>Unlock the app</h1>
-    <p>Provide app password to decrypt your private key</p>
-    
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Unlock the app</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+  <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/login.js"></script>
+</head>
+
+<body>
+  <div class="container text-light">
+    <div class="vh-100 d-flex align-items-center justify-content-center">
+      <div class="col-xl-6 col-md-8 col-sm-10">
+        <div class="row mb-4">
+          <h1 class="h1 text-center" id="h1">Unlock the app</h1>
+        </div>
+        <div class="row text-muted-light" id="firstStepDiv" style="display: none;">
+          <div>
+            <p>Input app password to decrypt your private key.</p>
+          </div>
+          <div class="form-group mt-3">
+            <label for="appPassword">App password</label>
+            <input type="password" class="form-control text-input-dark mb-3" id="appPassword">
+          </div>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-success btn-lg" id="firstStepBtn">Unlock</button>
+          </div>
+        </div>
+        <div class="row text-muted-light text-center" id="secondStepDiv" style="display: none;">
+          <div class="spinner-border text-light text-center mb-3" role="status" id="fifthStepSpinner">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div>
+            <p>Please wait. Contacting the server.</p>
+          </div>
+        </div>
+        <div class="row text-muted-light mt-3">
+          <span class="text-warning text-center" id="errorMsg" style="opacity: 0">Error.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="reset-app text-muted">
+    <p>If there is a problem you can reset the app and provide 24-word passphrase again.</p>
+    <div class="text-start">
+      <button class="btn btn-outline-secondary" id="resetBtn">Reset App</button>
+      <button class="btn btn-danger" style="display: none;" id="confirmResetBtn">RESET APP</button>
+    </div>
+  </div>
+
+</body>
+
 </html>

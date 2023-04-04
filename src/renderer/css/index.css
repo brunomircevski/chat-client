@@ -26,3 +26,9 @@ body {
 .spinner-center {
   margin-left: calc(50% - 1rem);
 }
+.reset-app {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 350px;
+}

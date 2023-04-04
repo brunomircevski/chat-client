@@ -191,6 +191,7 @@ fifthStepBtn.addEventListener("click", () => {
                     h1.innerText = "Account created"
     
                     store.set('username', username);
+                    store.set('appReady', "true");
                 } else {
                     throw Error("Server returned different username.");
                 }
@@ -202,6 +203,8 @@ fifthStepBtn.addEventListener("click", () => {
                     fifthStepErrorMsg.innerText = "Unknown error.";
                 } else {
                     fifthStepErrorMsg.innerText = res.message;
+                    fifthStepSpinner.style.opacity = '0';
+                    fifthStepBtn.disabled = false;
                 }
                 fifthStepErrorMsg.style.opacity = "1";
             })
