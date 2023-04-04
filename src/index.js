@@ -25,7 +25,7 @@ const createWindow = () => {
 
   mainWindow.setMenu(null);
 
-  if(store.get('privateKey')) mainWindow.loadFile(path.join(__dirname, 'renderer/decrypt-key.html'));
+  if (store.get('appReady')) mainWindow.loadFile(path.join(__dirname, 'renderer/login.html'));
   else mainWindow.loadFile(path.join(__dirname, 'renderer/setup.html'));
 
   // Open the DevTools.

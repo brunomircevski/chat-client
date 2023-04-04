@@ -19,14 +19,14 @@ const checkServerAndRedirect = path => {
     let url = serverAddressInput.value;
 
     if(url.length < 8) {
-        errorMsg.style.display = "block";
+        errorMsg.style.opacity = "1";
         return;
     }
 
     if(url.slice(-1) != "/") url += "/";
 
-    spinner.style.display = "block";
-    errorMsg.style.display = "none";
+    spinner.style.opacity = "1";
+    errorMsg.style.opacity = "0";
 
     fetch(url + "api/auth/server-info")
         .then(response => {
@@ -38,14 +38,14 @@ const checkServerAndRedirect = path => {
             }
         })
         .catch(err => {
-            spinner.style.display = "none";
-            errorMsg.style.display = "block";
+            spinner.style.opacity = "0";
+            errorMsg.style.opacity = "1";
             console.log(err);
         });
 }
 
 serverAddressInput.addEventListener('focus', () => {
-    errorMsg.style.display = "none";
+    errorMsg.style.opacity = "0";
 });
 
-serverAddressInput.value = store.get('serverAddress');
+serverAddressInput.value = store.get('serverAddress') || "";

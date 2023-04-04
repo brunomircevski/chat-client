@@ -16,7 +16,7 @@
     <div class="vh-100 d-flex align-items-center justify-content-center">
       <div class="col-xl-6 col-md-8 col-sm-10">
         <div class="row mb-4">
-          <h1 class="h1 text-center">Create new account</h1>
+          <h1 class="h1 text-center" id="h1">Create new account</h1>
         </div>
         <div class="row text-muted-light" id="firstStepDiv">
           <div>
@@ -44,9 +44,10 @@
             <textarea id="passphraseCheckInput" class="form-control"></textarea>
           </div>
           <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-secondary me-2" id="thirdStepBtnBack">Back</button>
             <button class="btn btn-outline-success btn-lg" id="thirdStepBtn">Check passphrase</button>
           </div>
-          <div id="thirdStepErrorMsg" style="display: none">
+          <div id="thirdStepErrorMsg" style="opacity: 0">
             <span class="text-warning text-center">Wrong passphrase. Try again.</span>
           </div>
         </div>
@@ -65,7 +66,7 @@
             <button class="btn btn-outline-success btn-lg" id="fourthStepBtn">Set password</button>
           </div>
           <div>
-            <span class="text-warning text-center" id="fourthStepErrorMsg" style="display: none">Error.</span>
+            <span class="text-warning text-center" id="fourthStepErrorMsg" style="opacity: 0">Error.</span>
           </div>
         </div>
 
@@ -77,11 +78,24 @@
             <label for="username">Username</label>
             <input type="text" class="form-control text-input-dark mb-3" id="username">
           </div>
-          <div class="text-center mt-4">
-            <button class="btn btn-outline-success btn-lg" id="fifthStepBtnSkip">Create account</button>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="fifthStepBtn" disabled>Create account</button>
+          </div>
+          <div class="spinner-border text-light text-center spinner-center" role="status" id="fifthStepSpinner">
+            <span class="visually-hidden">Loading...</span>
           </div>
           <div>
-            <span class="text-warning text-center" id="fifthStepErrorMsg" style="display: none">Error.</span>
+            <span class="text-warning text-center" id="fifthStepErrorMsg" style="opacity: 0">Error.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="sixthStepDiv" style="display: none;">
+          <div>
+            <h3 class="h3 text-success">Success!</h3>
+            <p id="sixthStepAccountInfo"></p>
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <a href="login.html" class="btn btn-outline-success btn-lg">Open App</a>
           </div>
         </div>
 

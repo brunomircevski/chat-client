@@ -23,3 +23,6 @@ body {
   border: 1px solid #cccccc;
   color: #cccccc;
 }
+.spinner-center {
+  margin-left: calc(50% - 1rem);
+}
