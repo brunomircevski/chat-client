@@ -84,7 +84,8 @@ const getToken = () => {
     const md = forge.md.sha256.create();
     md.update(username, 'utf8');
     const signature = privateKey.sign(md);
-
+    const signatureBase64 = forge.util.encode64(signature);
+    
     fetch(url + "api/auth/login", {
         method: 'POST',
         headers: {
@@ -93,15 +94,14 @@ const getToken = () => {
         },
         body: JSON.stringify({
             username: username,
-            signature: signature
+            signature: signatureBase64
         })
     }).then(res => {
         if(res.status == 200) {
             res.json().then(res => {
                 if(res.token) {
                     window.sessionStorage.setItem('jwt', res.token);
-                    console.log(res.token);
-                    //GOOD continue to app
+                    window.location.href = 'app.html';
                 } else {
                     throw Error("No JWT returned.");
                 }

@@ -9,7 +9,7 @@ body {
 .text-muted-light {
   color: #cccccc;
 }
-#passphraseCheckInput {
+#passphraseCheckInput, #passphraseInput {
   background-color: var(--bg-lighter);
   outline: none;
   border: 1px solid #cccccc;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Restore an existing account - Encrypted chat</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+  <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/setup-restore.js"></script>
+
+</head>
+
+<body>
+  <div class="container text-light">
+    <div class="vh-100 d-flex align-items-center justify-content-center">
+      <div class="col-xl-6 col-md-8 col-sm-10">
+        <div class="row mb-4">
+          <h1 class="h1 text-center" id="h1">Restore an existing account</h1>
+        </div>
+        <div class="row text-muted-light" id="firstStepDiv">
+          <div>
+            <p>To restore an existing account you need to provide 24-word secret passphrase and username you used before. You can set a new app password.</p>
+          </div>
+          <div class="text-center mt-4">
+            <button class="btn btn-outline-success btn-lg" id="firstStepBtn">Next</button>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="secondStepDiv" style="display: none;">
+          <div>
+            <p>Input your 24-word secret passphrase.</p>
+            <textarea id="passphraseInput" class="form-control"></textarea>
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="secondStepBtn">Next</button>
+          </div>
+          <div id="secondStepErrorMsg" style="opacity: 0">
+            <span class="text-warning text-center">Wrong passphrase. Try again.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="thirdStepDiv" style="display: none;">
+          <div>
+            <p>If you set an app password you will need to provide it every time you open this app. It is used to encrypt your private key. To skip it leave both password inputs blank.</p>
+          </div>
+          <div class="form-group">
+            <label for="appPassword">App password (optional)</label>
+            <input type="password" class="form-control text-input-dark mb-3" id="appPassword">
+            <label for="repeatAppPassword">Repeat password (optional)</label>
+            <input type="password" class="form-control text-input-dark" id="repeatAppPassword">
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="thirdStepBtn">Set password</button>
+          </div>
+          <div>
+            <span class="text-warning text-center" id="thirdStepErrorMsg" style="opacity: 0">Error.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="fourthStepDiv" style="display: none;">
+          <div>
+            <p>Input your username. After this step app will contact the server do verify your account.</p>
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control text-input-dark mb-3" id="username">
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <button class="btn btn-outline-success btn-lg" id="fourthStepBtn" disabled>Restore account</button>
+          </div>
+          <div class="spinner-border text-light text-center spinner-center" role="status" id="fourthStepSpinner">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div>
+            <span class="text-warning text-center" id="fourthStepErrorMsg" style="opacity: 0">Error.</span>
+          </div>
+        </div>
+
+        <div class="row text-muted-light" id="fifthStepDiv" style="display: none;">
+          <div>
+            <h3 class="h3 text-success">Success!</h3>
+            <p>App is successfully restored.</p>
+          </div>
+          <div class="text-center mt-4 mb-4">
+            <a href="login.html" class="btn btn-outline-success btn-lg">Open App</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
