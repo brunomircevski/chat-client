@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Unlock the app</title>
+  <title>Encrypted Chat</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/index.css" />
   <link rel="stylesheet" href="css/app.css" />
@@ -12,16 +12,66 @@
 </head>
 
 <body>
-  <div class="container text-light">
-    <div class="vh-100 d-flex align-items-center justify-content-center">
-      <div class="col-xl-6 col-md-8 col-sm-10">
-        <div class="row mb-4">
-          <h1 class="h1 text-center" id="h1">App</h1>
+  <div class="container-fluid h-100">
+    <div class="row h-100 ">
+      <div class="col sidebar position-relative">
+        <div class="row header">
+            <div class="col app-title">
+              <h1 class="h3">Encrypted Chat</h1>
+            </div>
+            <div class="col add-chat">
+              <a href="" class="icon-btn"><img src="img/add.svg" alt="Add Chat"></a>
+            </div>
         </div>
-        <div class="row text-muted-light">
-          <div>
-            <p>App ready</p>
-            <p id="jwt"></p>
+        <div class="row chats">
+          <div class="col">
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+            <div class="chat"></div>
+          </div>
+        </div>
+        <div class="row footer position-absolute bottom-0">
+          <div class="col footer-menu">
+            <a href="" class="icon-btn"><img src="img/settings.svg" alt="Settings"></a>
+            <a href="" class="icon-btn"><img src="img/info.svg" alt="Info"></a>
+          </div>
+        </div>
+      </div>
+      <div class="col content position-relative">
+        <div class="row title-bar">
+          <div class="col">
+            <h3 class="title h3">Title, chat name</h3>
+            <span class="subtitle">Other info about this chat</span>
+          </div>
+        </div>
+        <div class="row messages-box">
+          <div class="col">
+            <p>Messages. Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque laudantium quos repellendus incidunt necessitatibus voluptatibus quisquam maiores laboriosam. Et, saepe! Laudantium eaque exercitationem culpa quibusdam? Magni iure quibusdam autem eum.          </p>
+          </div>
+        </div>
+        <div class="row message-input-box position-absolute bottom-0">
+          <div class="col">
+            <form id="message-form">
+              <textarea id="message-input" placeholder="Write a message..."></textarea>
+              <button id="message-send" class="icon-btn"><img src="img/send.svg" alt="Send"></button>
+            </form>
           </div>
         </div>
       </div>

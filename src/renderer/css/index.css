@@ -1,6 +1,11 @@
 :root {
   --bg-dark: #202125;
   --bg-lighter: #252630;
+  --bg-lightest: #282934;
+  --border-light: #353640;
+  --border-lighter: #404250;
+  --text-primary: #dddddd;
+  --text-muted: #bbbbbb;
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
