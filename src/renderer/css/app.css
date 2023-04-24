@@ -13,19 +13,21 @@ body {
     background-color: var(--bg-lighter);
     border-bottom: 1px solid black;
     padding: 10px;
-    height: 70px;
+    height: 67px;
 }
 
 .title-bar .title {
-    height: 22px;
+    height: 18px;
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 
 .title-bar .subtitle {
-    margin-left: 2px;
+    margin-left: 1px;
     color: var(--text-muted);
 }
 
-.messages-box {
+.messages-outer-box {
     height: calc(100vh - 140px);
 }
 
@@ -34,6 +36,14 @@ body {
     border-top: 1px solid black;
     padding: 10px 10px 0 10px;
     width: 100%;
+}
+
+.messages-box {
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 #message-input {
@@ -55,7 +65,7 @@ body {
     transform: translate(10px, -12px);
 }
 
-.icon-btn img{
+.icon-btn img {
     filter: invert(100%);
     opacity: 0.2;
     height: 30px;
@@ -78,9 +88,10 @@ body {
     height: 40px;
 }
 
-.app-title h1{
+.app-title h1 {
     line-height: 40px;
     color: var(--text-muted);
+    font-size: 1.7rem;
 }
 
 .chats {
@@ -95,8 +106,47 @@ body {
 }
 
 .chat {
-    border: 1px solid rgb(62, 62, 62);
-    height: 100px;
+    padding: 5px;
+    width: 100%;
+    margin: 0;
+}
+
+.chat:hover {
+    background-color: var(--border-light);
+    cursor: pointer;
+}
+
+.chat .chat-img-box {
+    flex: 0 0 75px;
+    padding: 7px 5px;
+}
+
+.chat .chat-img-box .chat-img {
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
+    line-height: 60px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.chat-text-box h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 2px 0;
+}
+
+.chat-text-box .chat-last-message-time {
+    color: var(--text-muted);
+}
+
+.chat-text-box .chat-last-message {
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+    display: block;
 }
 
 .footer-menu {
@@ -120,4 +170,31 @@ body {
 ::-webkit-scrollbar-thumb {
     background-color: var(--border-lighter);
     border-radius: 5px;
+}
+
+/*Background gradients*/
+
+.bg-gradient-1 {
+    background: rgb(0, 162, 195);
+    background: linear-gradient(135deg, rgba(0, 162, 195, 1) 0%, rgba(17, 93, 161, 1) 100%);
+}
+
+.bg-gradient-2 {
+    background: rgb(138, 81, 208);
+    background: linear-gradient(135deg, rgba(138, 81, 208, 1) 0%, rgba(137, 17, 161, 1) 100%);
+}
+
+.bg-gradient-3 {
+    background: rgb(255, 103, 103);
+    background: linear-gradient(135deg, rgba(255, 103, 103, 1) 0%, rgba(147, 1, 1, 1) 100%);
+}
+
+.bg-gradient-4 {
+    background: rgb(57, 161, 94);
+    background: linear-gradient(135deg, rgba(57, 161, 94, 1) 0%, rgba(28, 66, 0, 1) 100%);
+}
+
+.bg-gradient-5 {
+    background: rgb(224, 180, 0);
+    background: linear-gradient(135deg, rgba(224, 180, 0, 1) 0%, rgba(223, 141, 0, 1) 100%);
 }
