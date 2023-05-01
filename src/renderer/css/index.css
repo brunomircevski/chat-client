@@ -1,11 +1,17 @@
 :root {
-  --bg-dark: #202125;
+  --bg-dark: #171821;
   --bg-lighter: #252630;
   --bg-lightest: #282934;
   --border-light: #353640;
   --border-lighter: #404250;
   --text-primary: #dddddd;
   --text-muted: #bbbbbb;
+  --text-very-muted: #999999;
+
+  --message-bg: #282934;
+  --my-message-bg: #284463;
+  --message-header: #65a2e9;
+  --text-muted-my-message: #abcee2;
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;

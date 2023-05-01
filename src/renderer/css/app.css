@@ -121,13 +121,24 @@ body {
     padding: 7px 5px;
 }
 
-.chat .chat-img-box .chat-img {
+.chat-img {
     height: 60px;
     width: 60px;
     border-radius: 30px;
     line-height: 60px;
     text-align: center;
     font-size: 30px;
+    overflow: hidden;
+}
+
+.chat-img-sm {
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 25px;
+    overflow: hidden;
 }
 
 .chat-text-box h5 {
@@ -155,6 +166,58 @@ body {
 
 .footer-menu a {
     margin: 0px 3px;
+}
+
+.message-container {
+    width: 100%;
+    margin: 10px auto 0 auto;
+}
+
+.message {
+    background-color: var(--message-bg);
+    padding: 10px 15px;
+    margin-top: 2px;
+    border-radius: 7px;
+    width: fit-content;
+}
+
+.icon-col {
+    flex: 0 0 50px;
+    padding: 0;
+}
+
+.my-message-col .message {
+    background-color: var(--my-message-bg);
+    margin-left: auto; 
+    margin-right: 0;
+}
+
+.message-container-header {
+    color: var(--message-header);
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.message p {
+    margin: 0;
+}
+
+.message .message-date {
+    color: var(--text-muted);
+    height: 15px;
+    text-align: right;
+    font-size: 0.9rem;
+}
+.message p .date {
+    color: var(--text-very-muted);
+    font-size: 0.95rem;
+    margin-left: 20px;
+    float: right;
+    transform: translateY(2px);
+}
+
+.my-message-col .message p .date {
+    color: var(--text-muted-my-message);
 }
 
 /*Scrollbar*/
