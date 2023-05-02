@@ -1,20 +1,22 @@
-/*const Store = require('electron-store');
+const Store = require('electron-store');
 const forge = require('node-forge');
+const aes256 = require('aes256');
 
 const store = new Store();
 
 const url = store.get('serverAddress');
 const username = store.get('username');
-*/
+const publicKeyPem = store.get('publicKey');
+const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+
+const privateKeyPem = window.sessionStorage.getItem('privateKey');
+const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
+const symmetricKey = window.sessionStorage.getItem('symmetricKey');
+
 const sendMessageInput = document.getElementById("message-input");
 const sendMessageBtn = document.getElementById("message-send");
 const sendMessageForm = document.getElementById("message-form");
 const messagesOuterBox = document.getElementsByClassName("messages-outer-box")[0];
-
-
-window.addEventListener("load", () => {
-    //jwtBox.innerText = window.sessionStorage.getItem('jwt');
-});
 
 sendMessageInput.addEventListener("input", () => {
     sendMessageInput.style.height = "1px";

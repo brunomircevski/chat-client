@@ -81,6 +81,8 @@ const getToken = () => {
     const privateKeyPem = window.sessionStorage.getItem('privateKey');
     const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
 
+    deriveSymmetricKey(privateKey);
+
     const md = forge.md.sha256.create();
     md.update(username, 'utf8');
     const signature = privateKey.sign(md);
@@ -117,6 +119,14 @@ const getToken = () => {
     });
 }
 
+const deriveSymmetricKey = (privateKey) => {
+
+    const privateKeyDer = forge.asn1.toDer(forge.pki.privateKeyToAsn1(privateKey)).getBytes();
+    const hkdf = forge.pkcs5.pbkdf2(privateKeyDer, '', 1, 32, 'sha256');
+
+    window.sessionStorage.setItem('symmetricKey', hkdf);
+}
+
 resetBtn.addEventListener("click", async () => {
     resetBtn.disabled = true;
     resetBtn.innerText = "Are you sure?";
@@ -128,7 +138,6 @@ confirmResetBtn.addEventListener("click", async () => {
     window.sessionStorage.clear();
     window.location.href = "setup.html"
 });
-
 
 //Hide error on input focus
 appPasswordInput.addEventListener('focus', () => { errorMsg.style.opacity = "0"; });
