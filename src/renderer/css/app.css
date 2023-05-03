@@ -220,6 +220,59 @@ body {
     color: var(--text-muted-my-message);
 }
 
+/*Overlay*/
+.full-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.display-none {
+    display: none;
+}
+
+.full-overlay .container {
+    background-color: var(--bg-lightest);
+    width: 80%;
+    margin-top: 80px;
+    min-height: 400px;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+.overlay-close {
+    float: right;
+}
+
+.overlay-close .icon-btn img {
+    transform: rotate(45deg);
+}
+
+.overlay-content {
+    margin-top: 30px;
+}
+
+#invites-overlay .add-chat-form {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+#invites-overlay .add-chat-form form input {
+    width: calc( 100% - 110px );
+    display: inline;
+    border: 1px solid var(--border-lighter);
+}
+
+#invites-overlay .add-chat-form form button {
+    width: 90px;
+    margin-left: 10px;
+    display: inline;
+}
+
 /*Scrollbar*/
 ::-webkit-scrollbar {
     width: 8px;

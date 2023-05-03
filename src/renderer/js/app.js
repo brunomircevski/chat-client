@@ -13,10 +13,23 @@ const privateKeyPem = window.sessionStorage.getItem('privateKey');
 const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
 const symmetricKey = window.sessionStorage.getItem('symmetricKey');
 
+
+//return aes256.encrypt(key, message);
+
+
+//UI
 const sendMessageInput = document.getElementById("message-input");
 const sendMessageBtn = document.getElementById("message-send");
 const sendMessageForm = document.getElementById("message-form");
 const messagesOuterBox = document.getElementsByClassName("messages-outer-box")[0];
+
+const overlay = document.getElementsByClassName("full-overlay")[0];
+const closeOverlayBtn = document.getElementById("close-overlay-btn");
+
+const allOverlays = document.getElementsByClassName("overlay-content");
+const invitesOverlay = document.getElementById("invites-overlay");
+
+const addChatBtn = document.getElementById("add-chat-btn");
 
 sendMessageInput.addEventListener("input", () => {
     sendMessageInput.style.height = "1px";
@@ -45,3 +58,26 @@ sendMessageForm.addEventListener("submit", (event) => {
     messagesOuterBox.style.height = "calc( 100vh - 140px )";
     sendMessageInput.value = "";
 });
+
+overlay.addEventListener("click", (e) => {
+    if(e.target !== e.currentTarget) return;
+    hideOverlays();
+});
+
+closeOverlayBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    hideOverlays();
+});
+
+addChatBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    overlay.classList.remove("display-none");
+    invitesOverlay.classList.remove("display-none");
+});
+
+const hideOverlays = () => {
+    overlay.classList.add("display-none");
+    for(i=0; i< allOverlays.length; i++) {
+        allOverlays[i].classList.add("display-none");
+    }
+};

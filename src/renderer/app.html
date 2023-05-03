@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/app.css" />
   <script defer src="js/bootstrap.bundle.min.js"></script>
   <script defer src="js/app.js"></script>
-  <script defer src="js/encryptionMethods.js"></script>
+  <script defer src="js/invite.js"></script>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
               <h1 class="h3">Encrypted Chat</h1>
             </div>
             <div class="col add-chat">
-              <a href="" class="icon-btn"><img src="img/add.svg" alt="Add Chat"></a>
+              <a href="" class="icon-btn" id="add-chat-btn"><img src="img/add.svg" alt="Add Chat"></a>
             </div>
         </div>
         <div class="row chats">
@@ -144,7 +144,24 @@
       </div>
     </div>
   </div>
-
+  <div class="full-overlay display-none">
+    <div class="container">
+      <div class="overlay-close">
+        <a href="" class="icon-btn" id="close-overlay-btn"><img src="img/add.svg" alt="Close"></a>
+      </div>
+      <div class="overlay-content display-none" id="invites-overlay">
+        <h2 class="h2 text-center">New chat</h2>
+        <div class="add-chat-form">
+          <form>
+            <input type="text" class="form-control text-input-dark" placeholder="username@localhost">
+            <button class="btn btn-outline-success form-control">Invite</button>
+          </form>
+        </div>
+      </div>
+      <div class="overlay-content display-none">B</div>
+      <div class="overlay-content display-none">C</div>
+    </div>
+  </div>
 </body>
 
 </html>
