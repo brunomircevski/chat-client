@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/index.css" />
   <link rel="stylesheet" href="css/app.css" />
   <script defer src="js/bootstrap.bundle.min.js"></script>
+  <script defer src="js/models.js"></script>
   <script defer src="js/app.js"></script>
   <script defer src="js/invite.js"></script>
 </head>
@@ -152,10 +153,31 @@
       <div class="overlay-content display-none" id="invites-overlay">
         <h2 class="h2 text-center">New chat</h2>
         <div class="add-chat-form">
-          <form>
-            <input type="text" class="form-control text-input-dark" placeholder="username@localhost">
+          <form id="invite-form">
+            <input type="text" id="invite-username" class="form-control text-input-dark" placeholder="username@example.com">
             <button class="btn btn-outline-success form-control">Invite</button>
+            <div class="text-muted mt-1 ms-1">If the user exists on your server you can just input their username.</div>
           </form>
+        </div>
+        <div class="spinner-border text-light text-center mt-3 mb-3 display-none" role="status" id="invite-spinner">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="text-warning mt-3 mb-3 display-none" id="invite-error">Error.</div>
+        <h2 class="h2 text-center mt-5">Pending invites</h2>
+        <div class="pending-invites">
+          <table class="table table-dark table-my-dark mt-3" id="invites-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+          <div class="text-muted mt-1">When user accepts an invite you will see them in your contacts.</div>
         </div>
       </div>
       <div class="overlay-content display-none">B</div>

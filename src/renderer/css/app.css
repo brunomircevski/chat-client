@@ -273,6 +273,11 @@ body {
     display: inline;
 }
 
+.table-my-dark * {
+    color: var(--text-muted);
+    background-color: var(--bg-lighter) !important;
+}
+
 /*Scrollbar*/
 ::-webkit-scrollbar {
     width: 8px;

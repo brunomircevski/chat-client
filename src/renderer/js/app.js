@@ -5,17 +5,14 @@ const aes256 = require('aes256');
 const store = new Store();
 
 const url = store.get('serverAddress');
-const username = store.get('username');
+const myUsername = store.get('username');
 const publicKeyPem = store.get('publicKey');
 const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
 
 const privateKeyPem = window.sessionStorage.getItem('privateKey');
 const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
 const symmetricKey = window.sessionStorage.getItem('symmetricKey');
-
-
-//return aes256.encrypt(key, message);
-
+const jwt = window.sessionStorage.getItem('jwt');
 
 //UI
 const sendMessageInput = document.getElementById("message-input");
@@ -36,7 +33,7 @@ sendMessageInput.addEventListener("input", () => {
     let h = 2 + sendMessageInput.scrollHeight;
     if (h > 200) h = 200;
     sendMessageInput.style.height = h + "px";
-    h+=104;
+    h += 104;
     messagesOuterBox.style.height = "calc( 100vh - " + h + "px )";
 });
 
@@ -51,7 +48,7 @@ sendMessageForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const message = sendMessageInput.value.trim();
 
-    if(message == "") return;
+    if (message == "") return;
 
     console.log(message);
     sendMessageInput.style.height = "36px";
@@ -60,7 +57,7 @@ sendMessageForm.addEventListener("submit", (event) => {
 });
 
 overlay.addEventListener("click", (e) => {
-    if(e.target !== e.currentTarget) return;
+    if (e.target !== e.currentTarget) return;
     hideOverlays();
 });
 
@@ -73,11 +70,17 @@ addChatBtn.addEventListener("click", (e) => {
     e.preventDefault();
     overlay.classList.remove("display-none");
     invitesOverlay.classList.remove("display-none");
+    updateInvitesOverlay();
 });
 
 const hideOverlays = () => {
     overlay.classList.add("display-none");
-    for(i=0; i< allOverlays.length; i++) {
+    for (i = 0; i < allOverlays.length; i++) {
         allOverlays[i].classList.add("display-none");
     }
 };
+
+//OnLoad
+window.addEventListener("load", () => {
+    readInvites();
+});
