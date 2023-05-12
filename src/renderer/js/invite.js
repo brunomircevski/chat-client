@@ -1,3 +1,5 @@
+const { sha256 } = require("node-forge");
+
 const inviteForm = document.getElementById("invite-form");
 const inviteUsernameInput = document.getElementById("invite-username");
 const inviteError = document.getElementById("invite-error");
@@ -9,7 +11,7 @@ const invites = [];
 const readInvites = () => {
     try {
         const encryptedInvitesJSON = store.get('invites');
-        if(encryptedInvitesJSON == "" || encryptedInvitesJSON == undefined) return;
+        if (encryptedInvitesJSON == "" || encryptedInvitesJSON == undefined) return;
         const invitesJSON = aes256.decrypt(symmetricKey, encryptedInvitesJSON);
         const obj = JSON.parse(invitesJSON);
 
@@ -17,7 +19,7 @@ const readInvites = () => {
             invites.push(new Invite(inv.address, inv.accessKey));
         });
     }
-    catch(e) {
+    catch (e) {
         console.log("Error while reading and decrypting invites.");
         console.log(e);
     }
@@ -76,6 +78,11 @@ const addInvite = (userAddress, accessKey) => {
     const invitesJSON = JSON.stringify(invites);
     const encryptedInvitesJSON = aes256.encrypt(symmetricKey, invitesJSON);
     store.set('invites', encryptedInvitesJSON);
+
+    if(invites.length == 0) 
+        uploadInvitesData(null);
+    else 
+        uploadInvitesData(encryptedInvitesJSON);
 };
 
 //Invite form
@@ -101,14 +108,20 @@ inviteForm.addEventListener("submit", (e) => {
         serverAddress = url;
     }
 
-    if (username == myUsername && serverAddress == url) {
+    if (username == me.username && serverAddress == url) {
         inviteError.innerText = "You cannot invite yourself.";
         inviteError.classList.remove("display-none");
         inviteSpinner.classList.add("display-none");
         return;
     }
 
-    fetch(serverAddress + "api/auth/server-info", {
+    getPublicKeyAndSendInvite(serverAddress, username, userAddress);
+});
+
+const getPublicKeyAndSendInvite = (serverAddress, username, userAddress) => {
+    fetch(serverAddress + "api/invite/public-key?" + new URLSearchParams({
+        username: username
+    }), {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -116,24 +129,43 @@ inviteForm.addEventListener("submit", (e) => {
     }).then(response => {
         if (response.status == 200) {
             response.json().then(res => {
-                if (!res.encryptedChatServer) new Error();
+                if (!res.publicKey) new Error("No public key returned");
                 else {
-                    sendInvite(serverAddress, username, userAddress);
+                    sendInvite(serverAddress, username, userAddress, res.publicKey);
                 }
             });
 
-        } else throw new Error();
+        } else throw new Error("User not found");
     }).catch(e => {
-        inviteError.innerText = "Server did not respond correctly. Please check if address is correct.";
+        inviteError.innerText = "User not found. Please check if address and username are correct.";
         inviteError.classList.remove("display-none");
         inviteSpinner.classList.add("display-none");
         console.log(e);
         return;
     });
+};
 
-});
 
-const sendInvite = (serverAddress, username, userAddress) => {
+const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPem) => {
+
+    const channelAccessKey = await getNewChannel();
+    if (!channelAccessKey) {
+        inviteError.innerText = "Could not create a new channel";
+        inviteError.classList.remove("display-none");
+        inviteSpinner.classList.add("display-none");
+        return;
+    }
+
+    const channelEncryptionKey = getNewAesKey();
+    const users = [me, new User(username, serverAddress)];
+
+    const channel = new Channel(channelAccessKey, channelEncryptionKey, users, url);
+    const inviteContent = JSON.stringify(channel);
+
+    const encryptedInviteContent = aes256.encrypt(channelEncryptionKey, inviteContent)
+
+    const key = publicKeyEncrypt64(channelEncryptionKey, usersPublicKeyPem);
+
     fetch(serverAddress + "api/invite", {
         method: 'POST',
         headers: {
@@ -142,13 +174,15 @@ const sendInvite = (serverAddress, username, userAddress) => {
         },
         body: JSON.stringify({
             username: username,
-            content: "supersecretcontent"
+            content: encryptedInviteContent,
+            encryptedKey: key,
         })
     }).then(res => {
         if (res.status == 200) {
             res.json().then(res => {
                 if (res.accessKey) {
                     inviteSpinner.classList.add("display-none");
+                    inviteError.classList.add("display-none");
                     addInvite(userAddress, res.accessKey);
                     inviteUsernameInput.value = '';
                 } else {
@@ -170,7 +204,52 @@ const sendInvite = (serverAddress, username, userAddress) => {
     });
 }
 
+const getNewChannel = () => {
+    return new Promise(resolve => {
+        fetch(url + "api/channel", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'bearer ' + jwt
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                response.json().then(res => {
+                    if (!res.accessKey) new Error("No access key returned");
+                    else {
+                        resolve(res.accessKey);
+                    }
+                });
+
+            } else throw new Error();
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
+};
+
 //Hide errors on input focus
 inviteUsernameInput.addEventListener("focus", () => {
     inviteError.classList.add("display-none");
 });
+
+//Upload data to server
+const uploadInvitesData = (data) => {
+    fetch(url + "api/data/invites", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + jwt
+        },
+        body: JSON.stringify({data: data})
+        
+    }).then(response => {
+        if (response.status != 200) {
+            throw new Error("Invites data not uploaded");
+        } 
+    }).catch(e => {
+        console.log(e);
+    });
+}

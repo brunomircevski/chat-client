@@ -5,7 +5,8 @@ const aes256 = require('aes256');
 const store = new Store();
 
 const url = store.get('serverAddress');
-const myUsername = store.get('username');
+const me = new User(store.get('username'), url);
+
 const publicKeyPem = store.get('publicKey');
 const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
 
