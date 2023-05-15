@@ -18,6 +18,8 @@ const confirmResetBtn = document.getElementById("confirmResetBtn");
 
 const usingAppPassword = store.get("usingAppPassword");
 
+let jwt;
+
 window.addEventListener('load', () => {
     if (usingAppPassword) firstStepDiv.style.display = "block";
     else {
@@ -102,8 +104,9 @@ const getToken = () => {
         if(res.status == 200) {
             res.json().then(res => {
                 if(res.token) {
+                    jwt = res.token;
                     window.sessionStorage.setItem('jwt', res.token);
-                    window.location.href = 'app.html';
+                    getUserData();
                 } else {
                     throw Error("No JWT returned.");
                 }
@@ -126,6 +129,36 @@ const deriveSymmetricKey = (privateKey) => {
 
     window.sessionStorage.setItem('symmetricKey', hkdf);
 }
+
+const getUserData = async () => {
+
+    await new Promise(resolve => {
+        fetch(url + "api/data/invites", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'bearer ' + jwt
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                response.json().then(res => {
+                    store.set('invites', res.data)
+                    console.log("Updated invites data");
+                    resolve();
+                });
+            } else {
+                console.log("Could not get invites data");
+                resolve();
+            }
+            
+        }).catch(e => {
+            console.log(e);
+            resolve();
+        });
+    });
+
+    window.location.href = 'app.html';
+};
 
 resetBtn.addEventListener("click", async () => {
     resetBtn.disabled = true;

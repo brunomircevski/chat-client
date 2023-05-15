@@ -71,7 +71,8 @@ addChatBtn.addEventListener("click", (e) => {
     e.preventDefault();
     overlay.classList.remove("display-none");
     invitesOverlay.classList.remove("display-none");
-    updateInvitesOverlay();
+    
+    updateInvitesStatus();
 });
 
 const hideOverlays = () => {

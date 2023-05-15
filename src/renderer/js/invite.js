@@ -4,6 +4,7 @@ const inviteForm = document.getElementById("invite-form");
 const inviteUsernameInput = document.getElementById("invite-username");
 const inviteError = document.getElementById("invite-error");
 const inviteSpinner = document.getElementById("invite-spinner");
+const inviteListSpinner = document.getElementById("invite-list-spinner");
 
 //Storage
 const invites = [];
@@ -16,7 +17,7 @@ const readInvites = () => {
         const obj = JSON.parse(invitesJSON);
 
         obj.forEach(inv => {
-            invites.push(new Invite(inv.address, inv.accessKey));
+            invites.push(new Invite(new User(inv.user.username, inv.user.serverAddress), inv.accessKey, inv.channelAccessKey, new Date(inv.time)));
         });
     }
     catch (e) {
@@ -37,20 +38,53 @@ const updateInvitesOverlay = () => {
 
     //Repopulate table
     invites.forEach(invite => {
-        appendRowToTable(table, invite);
+        appendRowToInvitesTable(table, invite);
     });
 
 };
 
-const appendRowToTable = (table, invite) => {
+const updateInvitesStatus = async () => {
+
+    inviteListSpinner.classList.remove("display-none");
+
+    for (i = invites.length - 1; i >= 0; i--) {
+        const status = await getInviteStatus(invites[i].user.serverAddress, invites[i].accessKey);
+        if (!status) invites.splice(i, 1)
+    }
+
+    inviteListSpinner.classList.add("display-none");
+    updateInvitesOverlay();
+}
+
+const getInviteStatus = (address, accessKey) => {
+    return new Promise(resolve => {
+        fetch(address + "api/invite?" + new URLSearchParams({
+            accessKey: accessKey
+        }), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                resolve(true);
+            } else resolve(false);
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
+};
+
+const appendRowToInvitesTable = (table, invite) => {
 
     const row = document.createElement('tr');
 
     const addressCell = document.createElement('td');
-    addressCell.textContent = invite.address;
+    addressCell.textContent = invite.user.toAddress();
 
     const timeCell = document.createElement('td');
-    timeCell.textContent = invite.time;
+    timeCell.textContent = invite.time.toLocaleString("pl-PL", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
     const statusCell = document.createElement('td');
     statusCell.textContent = 'Pending';
@@ -59,6 +93,12 @@ const appendRowToTable = (table, invite) => {
     const cancelButton = document.createElement('button');
     cancelButton.className = 'btn btn-outline-danger';
     cancelButton.textContent = 'Cancel';
+    cancelButton.onclick = () => {
+        cancelInvite(invite.accessKey).then(() => {
+            updateInvitesOverlay();
+            saveInvites();
+        });
+    };
     buttonCell.appendChild(cancelButton);
 
     row.appendChild(addressCell);
@@ -70,22 +110,24 @@ const appendRowToTable = (table, invite) => {
 };
 
 
-const addInvite = (userAddress, accessKey) => {
-    invites.push(new Invite(userAddress, accessKey));
+const addInvite = (user, accessKey, channelAccessKey) => {
+    invites.push(new Invite(user, accessKey, channelAccessKey, new Date()));
 
     updateInvitesOverlay();
+    saveInvites();
+};
 
+const saveInvites = () => {
     const invitesJSON = JSON.stringify(invites);
     const encryptedInvitesJSON = aes256.encrypt(symmetricKey, invitesJSON);
     store.set('invites', encryptedInvitesJSON);
 
-    if(invites.length == 0) 
+    if (invites.length == 0)
         uploadInvitesData(null);
-    else 
+    else
         uploadInvitesData(encryptedInvitesJSON);
-};
+}
 
-//Invite form
 inviteForm.addEventListener("submit", (e) => {
     e.preventDefault();
     inviteSpinner.classList.remove("display-none");
@@ -113,6 +155,17 @@ inviteForm.addEventListener("submit", (e) => {
         inviteError.classList.remove("display-none");
         inviteSpinner.classList.add("display-none");
         return;
+    }
+
+    //Check if user is already invited
+    const sameUsernameInvites = invites.filter(x => x.user.username == username)
+    for (i = 0; i < sameUsernameInvites.length; i++) {
+        if (sameUsernameInvites[i].user.serverAddress == serverAddress) {
+            inviteError.innerText = "User is already invited. Wait for their response.";
+            inviteError.classList.remove("display-none");
+            inviteSpinner.classList.add("display-none");
+            return;
+        }
     }
 
     getPublicKeyAndSendInvite(serverAddress, username, userAddress);
@@ -157,9 +210,10 @@ const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPe
     }
 
     const channelEncryptionKey = getNewAesKey();
-    const users = [me, new User(username, serverAddress)];
+    const user = getUserFromAddress(userAddress);
+    const users = [me, user];
 
-    const channel = new Channel(channelAccessKey, channelEncryptionKey, users, url);
+    const channel = new Channel(channelAccessKey, channelEncryptionKey, users, url, false);
     const inviteContent = JSON.stringify(channel);
 
     const encryptedInviteContent = aes256.encrypt(channelEncryptionKey, inviteContent)
@@ -183,7 +237,7 @@ const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPe
                 if (res.accessKey) {
                     inviteSpinner.classList.add("display-none");
                     inviteError.classList.add("display-none");
-                    addInvite(userAddress, res.accessKey);
+                    addInvite(user, res.accessKey, channelAccessKey);
                     inviteUsernameInput.value = '';
                 } else {
                     throw Error("No invite access key returned");
@@ -229,6 +283,35 @@ const getNewChannel = () => {
     });
 };
 
+const cancelInvite = (accessKey) => {
+    const invite = invites.filter(x => x.accessKey == accessKey);
+    if(invite.length != 1) return new Promise(resolve => { resolve(false) });
+
+    const channelAccessKey = invite[0].channelAccessKey;
+
+    const index = invites.indexOf(invite[0]);
+    invites.splice(index, 1);
+
+    return new Promise(resolve => {
+        fetch(url + "api/invite?" + new URLSearchParams({
+            inviteAccessKey: accessKey,
+            channelAccessKey: channelAccessKey
+        }), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                resolve(true);
+            } else resolve(false);
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
+};
+
 //Hide errors on input focus
 inviteUsernameInput.addEventListener("focus", () => {
     inviteError.classList.add("display-none");
@@ -243,12 +326,12 @@ const uploadInvitesData = (data) => {
             'Content-Type': 'application/json',
             'Authorization': 'bearer ' + jwt
         },
-        body: JSON.stringify({data: data})
-        
+        body: JSON.stringify({ data: data })
+
     }).then(response => {
         if (response.status != 200) {
             throw new Error("Invites data not uploaded");
-        } 
+        }
     }).catch(e => {
         console.log(e);
     });
