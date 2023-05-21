@@ -179,6 +179,7 @@ body {
     margin-top: 2px;
     border-radius: 7px;
     width: fit-content;
+    position: relative;
 }
 
 .icon-col {
@@ -202,21 +203,22 @@ body {
     margin: 0;
 }
 
-.message .message-date {
-    color: var(--text-muted);
-    height: 15px;
-    text-align: right;
-    font-size: 0.9rem;
-}
-.message p .date {
-    color: var(--text-very-muted);
-    font-size: 0.95rem;
-    margin-left: 20px;
-    float: right;
-    transform: translateY(2px);
+.message p::after {
+    content: ' ';
+    width: 50px;
+    white-space: pre;
+    display: inline-block;
 }
 
-.my-message-col .message p .date {
+.message .date {
+    color: var(--text-very-muted);
+    font-size: 0.95rem;
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+}
+
+.my-message-col .message .date {
     color: var(--text-muted-my-message);
 }
 
@@ -278,6 +280,19 @@ body {
     background-color: var(--bg-lighter) !important;
 }
 
+.received-invites .invite:last-child {
+    margin-bottom: 20px;
+}
+
+.received-invites > h5 {
+    margin-left: 18px;
+    color: var(--text-primary);
+}
+
+.received-invites .invite {
+    cursor: auto;
+}
+
 /*Scrollbar*/
 ::-webkit-scrollbar {
     width: 8px;
@@ -294,6 +309,11 @@ body {
 }
 
 /*Background gradients*/
+
+.bg-gradient-0 {
+    background: rgb(33, 33, 33);
+    background: linear-gradient(135deg, rgb(40, 40, 40) 0%, rgb(16, 16, 16) 100%);
+}
 
 .bg-gradient-1 {
     background: rgb(0, 162, 195);

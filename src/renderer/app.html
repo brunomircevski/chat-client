@@ -19,15 +19,49 @@
     <div class="row h-100 ">
       <div class="col sidebar position-relative">
         <div class="row header">
-            <div class="col app-title">
-              <h1 class="h3">Encrypted Chat</h1>
-            </div>
-            <div class="col add-chat">
-              <a href="" class="icon-btn" id="add-chat-btn"><img src="img/add.svg" alt="Add Chat"></a>
-            </div>
+          <div class="col app-title">
+            <h1 class="h3">Encrypted Chat</h1>
+          </div>
+          <div class="col add-chat">
+            <a href="" class="icon-btn" id="add-chat-btn"><img src="img/add.svg" alt="Add Chat"></a>
+          </div>
         </div>
         <div class="row chats">
           <div class="col">
+            <div class="received-invites">
+              <h5 class="h5">New invites (<span id="num-of-invites">3</span>)</h5>
+              <article class="row chat invite">
+                <div class="col chat-img-box">
+                  <div class="chat-img bg-gradient-0">?</div>
+                </div>
+                <div class="col">
+                  <div class="">user@example.com</div>
+                  <button class="btn btn-outline-danger">Cancel</button>
+                  <button class="btn btn-outline-success">Accept</button>
+                </div>
+              </article>
+              <article class="row chat invite">
+                <div class="col chat-img-box">
+                  <div class="chat-img bg-gradient-0">?</div>
+                </div>
+                <div class="col">
+                  <div class="">user@example.com</div>
+                  <button class="btn btn-outline-danger">Cancel</button>
+                  <button class="btn btn-outline-success">Accept</button>
+                </div>
+              </article>
+              <article class="row chat invite">
+                <div class="col chat-img-box">
+                  <div class="chat-img bg-gradient-0">?</div>
+                </div>
+                <div class="col">
+                  <div class="">user@example.com</div>
+                  <button class="btn btn-outline-danger">Cancel</button>
+                  <button class="btn btn-outline-success">Accept</button>
+                </div>
+              </article>
+              <h5 class="h5 mt-3">Your chats</h5>
+            </div>
             <article class="row chat">
               <div class="col chat-img-box">
                 <div class="chat-img bg-gradient-1">A</div>
@@ -35,7 +69,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
             <article class="row chat">
@@ -45,7 +80,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
             <article class="row chat">
@@ -55,7 +91,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
             <article class="row chat">
@@ -65,7 +102,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
             <article class="row chat">
@@ -75,7 +113,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
             <article class="row chat">
@@ -85,7 +124,8 @@
               <div class="col chat-text-box">
                 <h5 class="h5">Chat name</h5>
                 <span class="chat-last-message-time">24/03/2023</span>
-                <span class="chat-last-message">This is newest message that should be shorten because its too long</span>
+                <span class="chat-last-message">This is newest message that should be shorten because its too
+                  long</span>
               </div>
             </article>
           </div>
@@ -109,10 +149,14 @@
             <article class="row message-container">
               <div class="offset-xl-5 col-xl-7 offset-lg-4 col-lg-8 offset-2 col-10 my-message-col">
                 <div class="message">
-                  <p>test<span class="date">11:34</span></p>
+                  <p>test</p>
+                  <span class="date">11:34</span>
                 </div>
                 <div class="message">
-                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloremque facilis omnis dolorum voluptates minus id debitis, dignissimos aliquam. Asperiores corporis nostrum error consequuntur maxime, aliquam aliquid reprehenderit itaque? Impedit, fuga.<span class="date">11:34</span></p>
+                  <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Doloremque facilis omnis dolorum
+                    voluptates minus id debitis, dignissimos aliquam. Asperiores corporis nostrum error consequuntur
+                    maxime, aliquam aliquid reprehenderit itaque? Impedit, fuga.</p>
+                    <span class="date">11:34</span>
                 </div>
               </div>
             </article>
@@ -121,15 +165,20 @@
                 <div class="chat-img-sm bg-gradient-1">A</div>
               </div>
               <div class="col-xl-7 col-lg-8 col-10 message-col">
-                <div class="message">                
+                <div class="message">
                   <div class="message-container-header">Username</div>
-                  <p>test<span class="date">11:34</span></p>
+                  <p>test</p>
+                  <span class="date">11:34</span>
                 </div>
                 <div class="message">
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum in fuga assumenda veniam, voluptas, harum voluptate atque maxime mollitia, corrupti cupiditate molestias. Porro reiciendis voluptatum totam a quisquam nisi veritatis?<span class="date">11:34</span></p>
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum in fuga assumenda veniam, voluptas,
+                    harum voluptate atque maxime mollitia, corrupti cupiditate molestias. Porro reiciendis voluptatum
+                    totam a quisquam nisi veritatis?</p>
+                    <span class="date">11:34</span>
                 </div>
                 <div class="message">
-                  <p>test test<span class="date">11:34</span></p>
+                  <p>test test</p>
+                  <span class="date">11:34</span>
                 </div>
               </div>
             </article>
@@ -155,7 +204,8 @@
         <h2 class="h2 text-center">New chat</h2>
         <div class="add-chat-form">
           <form id="invite-form">
-            <input type="text" id="invite-username" class="form-control text-input-dark" placeholder="username@example.com">
+            <input type="text" id="invite-username" class="form-control text-input-dark"
+              placeholder="username@example.com">
             <button class="btn btn-outline-success form-control">Invite</button>
             <div class="text-muted mt-1 ms-1">If the user exists on your server you can just input their username.</div>
           </form>
@@ -178,7 +228,8 @@
             <tbody>
             </tbody>
           </table>
-          <div class="spinner-border text-light text-center mt-3 mb-3 display-none" role="status" id="invite-list-spinner">
+          <div class="spinner-border text-light text-center mt-3 mb-3 display-none" role="status"
+            id="invite-list-spinner">
             <span class="visually-hidden">Loading...</span>
           </div>
           <div class="text-muted mt-1">When user accepts an invite you will see them in your contacts.</div>
