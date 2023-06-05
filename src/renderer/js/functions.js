@@ -31,3 +31,8 @@ const getUserFromAddress = (address) => {
 
     return new User(username, serverAddress);
 }
+
+const userIsMe = (username, serverAddress) => {
+    if(username == me.username && serverAddress == me.serverAddress) return true;
+    return false;
+}

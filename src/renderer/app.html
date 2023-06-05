@@ -11,7 +11,8 @@
   <script defer src="js/models.js"></script>
   <script defer src="js/functions.js"></script>
   <script defer src="js/app.js"></script>
-  <script defer src="js/invite.js"></script>
+  <script defer src="js/sentInvites.js"></script>
+  <script defer src="js/receivedInvites.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
         </div>
         <div class="row chats">
           <div class="col">
-            <div class="received-invites">
+            <div class="received-invites display-none" id="received-invites-box">
               <h5 class="h5">New invites (<span id="num-of-invites">3</span>)</h5>
               <article class="row chat invite">
                 <div class="col chat-img-box">

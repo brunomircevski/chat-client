@@ -4,6 +4,7 @@ class Invite {
         this.accessKey = accessKey;
         this.channelAccessKey = channelAccessKey;
         this.time = time;
+        this.channel = undefined;
     }
 }
 

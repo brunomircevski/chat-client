@@ -1,5 +1,3 @@
-const { sha256 } = require("node-forge");
-
 const inviteForm = document.getElementById("invite-form");
 const inviteUsernameInput = document.getElementById("invite-username");
 const inviteError = document.getElementById("invite-error");
@@ -7,9 +5,9 @@ const inviteSpinner = document.getElementById("invite-spinner");
 const inviteListSpinner = document.getElementById("invite-list-spinner");
 
 //Storage
-const invites = [];
+const sentInvites = [];
 
-const readInvites = () => {
+const readSentInvites = () => {
     try {
         const encryptedInvitesJSON = store.get('invites');
         if (encryptedInvitesJSON == "" || encryptedInvitesJSON == undefined) return;
@@ -17,7 +15,7 @@ const readInvites = () => {
         const obj = JSON.parse(invitesJSON);
 
         obj.forEach(inv => {
-            invites.push(new Invite(new User(inv.user.username, inv.user.serverAddress), inv.accessKey, inv.channelAccessKey, new Date(inv.time)));
+            sentInvites.push(new Invite(new User(inv.user.username, inv.user.serverAddress), inv.accessKey, inv.channelAccessKey, new Date(inv.time)));
         });
     }
     catch (e) {
@@ -37,7 +35,7 @@ const updateInvitesOverlay = () => {
     });
 
     //Repopulate table
-    invites.forEach(invite => {
+    sentInvites.forEach(invite => {
         appendRowToInvitesTable(table, invite);
     });
 
@@ -47,9 +45,9 @@ const updateInvitesStatus = async () => {
 
     inviteListSpinner.classList.remove("display-none");
 
-    for (i = invites.length - 1; i >= 0; i--) {
-        const status = await getInviteStatus(invites[i].user.serverAddress, invites[i].accessKey);
-        if (!status) invites.splice(i, 1)
+    for (i = sentInvites.length - 1; i >= 0; i--) {
+        const status = await getInviteStatus(sentInvites[i].user.serverAddress, sentInvites[i].accessKey);
+        if (!status) sentInvites.splice(i, 1)
     }
 
     inviteListSpinner.classList.add("display-none");
@@ -111,18 +109,18 @@ const appendRowToInvitesTable = (table, invite) => {
 
 
 const addInvite = (user, accessKey, channelAccessKey) => {
-    invites.push(new Invite(user, accessKey, channelAccessKey, new Date()));
+    sentInvites.push(new Invite(user, accessKey, channelAccessKey, new Date()));
 
     updateInvitesOverlay();
     saveInvites();
 };
 
 const saveInvites = () => {
-    const invitesJSON = JSON.stringify(invites);
+    const invitesJSON = JSON.stringify(sentInvites);
     const encryptedInvitesJSON = aes256.encrypt(symmetricKey, invitesJSON);
     store.set('invites', encryptedInvitesJSON);
 
-    if (invites.length == 0)
+    if (sentInvites.length == 0)
         uploadInvitesData(null);
     else
         uploadInvitesData(encryptedInvitesJSON);
@@ -158,7 +156,7 @@ inviteForm.addEventListener("submit", (e) => {
     }
 
     //Check if user is already invited
-    const sameUsernameInvites = invites.filter(x => x.user.username == username)
+    const sameUsernameInvites = sentInvites.filter(x => x.user.username == username)
     for (i = 0; i < sameUsernameInvites.length; i++) {
         if (sameUsernameInvites[i].user.serverAddress == serverAddress) {
             inviteError.innerText = "User is already invited. Wait for their response.";
@@ -284,13 +282,10 @@ const getNewChannel = () => {
 };
 
 const cancelInvite = (accessKey) => {
-    const invite = invites.filter(x => x.accessKey == accessKey);
+    const invite = sentInvites.filter(x => x.accessKey == accessKey);
     if(invite.length != 1) return new Promise(resolve => { resolve(false) });
 
     const channelAccessKey = invite[0].channelAccessKey;
-
-    const index = invites.indexOf(invite[0]);
-    invites.splice(index, 1);
 
     return new Promise(resolve => {
         fetch(url + "api/invite?" + new URLSearchParams({
@@ -303,6 +298,9 @@ const cancelInvite = (accessKey) => {
             }
         }).then(response => {
             if (response.status == 200) {
+                const index = sentInvites.indexOf(invite[0]);
+                sentInvites.splice(index, 1);
+
                 resolve(true);
             } else resolve(false);
         }).catch(e => {
