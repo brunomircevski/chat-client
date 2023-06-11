@@ -4,7 +4,6 @@ const inviteError = document.getElementById("invite-error");
 const inviteSpinner = document.getElementById("invite-spinner");
 const inviteListSpinner = document.getElementById("invite-list-spinner");
 
-//Storage
 const sentInvites = [];
 
 const readSentInvites = () => {
@@ -24,34 +23,79 @@ const readSentInvites = () => {
     }
 };
 
+const sentInvitesTable = document.querySelector('#invites-table');
+
 const updateInvitesOverlay = () => {
-    const table = document.querySelector('#invites-table');
-
-    //Clean table
-    const rows = table.querySelectorAll('tbody tr');
-
-    rows.forEach(row => {
-        row.parentNode.removeChild(row);
-    });
 
     //Repopulate table
     sentInvites.forEach(invite => {
-        appendRowToInvitesTable(table, invite);
+        appendRowToInvitesTable(invite);
     });
 
 };
 
 const updateInvitesStatus = async () => {
 
+    //Clean table
+    const rows = sentInvitesTable.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        row.parentNode.removeChild(row);
+    });
+
     inviteListSpinner.classList.remove("display-none");
+
+    let inviteWasRemoved = false;
 
     for (i = sentInvites.length - 1; i >= 0; i--) {
         const status = await getInviteStatus(sentInvites[i].user.serverAddress, sentInvites[i].accessKey);
-        if (!status) sentInvites.splice(i, 1)
+        if (status == "notfound") {
+            checkAndProcessInvite(sentInvites[i])
+            sentInvites.splice(i, 1);
+            inviteWasRemoved = true;
+        }
     }
 
     inviteListSpinner.classList.add("display-none");
     updateInvitesOverlay();
+
+    if(inviteWasRemoved) saveInvites();
+}
+
+const checkAndProcessInvite = async (invite) => {
+    let channelActive = false, error = false;
+
+    await new Promise(resolve => {
+        fetch(invite.user.serverAddress + "api/channel/status?" + new URLSearchParams({
+            accessKey: accessKey
+        }), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                response.json().then(res => {
+                    if(res.active === true) channelActive = true;
+                    resolve();
+                });
+            } else if(response.status != 404) {
+                throw new Error("Channel not found, can't check status")
+            } 
+            resolve();
+        }).catch(e => {
+            error = true;
+            console.log(e);
+            resolve();
+        });
+    });
+
+    let status;
+    if(channelActive) status = "accepted"
+    if(!channelActive) status = "rejected"
+    if(error) status = "notfound"
+
+    displayResolvedInvite(invite, status); // HERE
 }
 
 const getInviteStatus = (address, accessKey) => {
@@ -65,16 +109,19 @@ const getInviteStatus = (address, accessKey) => {
             }
         }).then(response => {
             if (response.status == 200) {
-                resolve(true);
-            } else resolve(false);
+                resolve("pending");
+            } else if (response.status == 404) {
+                resolve("notfound");
+            }
+            else resolve("error");
         }).catch(e => {
             console.log(e);
-            resolve(false);
+            resolve("error");
         });
     });
 };
 
-const appendRowToInvitesTable = (table, invite) => {
+const appendRowToInvitesTable = (invite) => {
 
     const row = document.createElement('tr');
 
@@ -104,9 +151,35 @@ const appendRowToInvitesTable = (table, invite) => {
     row.appendChild(statusCell);
     row.appendChild(buttonCell);
 
-    table.querySelector('tbody').appendChild(row);
+    sentInvitesTable.querySelector('tbody').appendChild(row);
 };
 
+const displayResolvedInvite = (invite, status) => {
+    const row = document.createElement('tr');
+
+    const addressCell = document.createElement('td');
+    addressCell.textContent = invite.user.toAddress();
+
+    const timeCell = document.createElement('td');
+    timeCell.textContent = invite.time.toLocaleString("pl-PL", { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    const statusCell = document.createElement('td');
+
+    if(status) {
+        statusCell.style.color = 'green';
+        statusCell.textContent = 'Accepted';
+    } else {
+        statusCell.style.color = 'red';
+        statusCell.textContent = 'Rejected';
+    }
+
+    row.appendChild(addressCell);
+    row.appendChild(timeCell);
+    row.appendChild(statusCell);
+    row.appendChild(document.createElement('td'));
+
+    sentInvitesTable.querySelector('tbody').appendChild(row);
+}
 
 const addInvite = (user, accessKey, channelAccessKey) => {
     sentInvites.push(new Invite(user, accessKey, channelAccessKey, new Date()));
@@ -283,14 +356,30 @@ const getNewChannel = () => {
 
 const cancelInvite = (accessKey) => {
     const invite = sentInvites.filter(x => x.accessKey == accessKey);
-    if(invite.length != 1) return new Promise(resolve => { resolve(false) });
+    if (invite.length != 1) return new Promise(resolve => { resolve(false) });
 
     const channelAccessKey = invite[0].channelAccessKey;
+    const inviteUrl = invite[0].user.serverAddress;
 
+    //Remove channel
+    fetch(url + "api/channel?" + new URLSearchParams({
+        accessKey: channelAccessKey
+    }), {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'bearer ' + jwt
+        }
+    }).then(response => {
+        if (response.status != 200) throw new Error("Channel not removed");
+    }).catch(e => {
+        console.log(e);
+    });
+
+    //Remove invite
     return new Promise(resolve => {
-        fetch(url + "api/invite?" + new URLSearchParams({
+        fetch(inviteUrl + "api/invite?" + new URLSearchParams({
             inviteAccessKey: accessKey,
-            channelAccessKey: channelAccessKey
         }), {
             method: 'DELETE',
             headers: {

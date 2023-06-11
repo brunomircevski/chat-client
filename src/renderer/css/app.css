@@ -142,7 +142,7 @@ body {
 }
 
 .chat-text-box h5 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     margin: 2px 0;
 }
@@ -280,7 +280,7 @@ body {
     background-color: var(--bg-lighter) !important;
 }
 
-.received-invites .invite:last-child {
+.received-invites-box {
     margin-bottom: 20px;
 }
 
@@ -291,6 +291,13 @@ body {
 
 .received-invites .invite {
     cursor: auto;
+}
+.received-invites .invite .user-address {
+    margin-top: 2px;
+}
+
+.received-invites .invite button {
+    margin-right: 10px;
 }
 
 /*Scrollbar*/

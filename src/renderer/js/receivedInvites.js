@@ -1,5 +1,3 @@
-const { access } = require("original-fs");
-
 const receivedInvites = [];
 
 const getReceivedInvites = async () => {
@@ -73,13 +71,107 @@ const getReceivedInvites = async () => {
 }
 
 const receivedInvitesBox = document.getElementById("received-invites-box");
+const receivedInvitesH = document.getElementById("received-invites");
 const numOfInvitesSpan = document.getElementById("num-of-invites");
 
 const displayReceivedInvites = () => {
-    if(receivedInvites.length < 1) return;
+    if (receivedInvites.length < 1) {
+        receivedInvitesH.classList.add("display-none");
+        return;
+    }
 
-    receivedInvitesBox.classList.remove("display-none");
+    receivedInvitesH.classList.remove("display-none");
     numOfInvitesSpan.innerText = receivedInvites.length;
 
-    //display
+    //Remove old invites if exists
+    receivedInvitesBox.querySelectorAll("article").forEach((article) => {
+        article.remove();
+    });
+
+    //Append new invites
+    receivedInvites.forEach(inv => {
+        appendReceivedInvite(inv);
+    });
+}
+
+const appendReceivedInvite = (invite) => {
+
+    const article = document.createElement("article");
+    article.className = "row chat invite";
+
+    const imgBoxDiv = document.createElement("div");
+    imgBoxDiv.className = "col chat-img-box";
+
+    const imgDiv = document.createElement("div");
+    imgDiv.className = "chat-img bg-gradient-0";
+    imgDiv.textContent = "?";
+    imgBoxDiv.appendChild(imgDiv);
+
+    const colDiv = document.createElement("div");
+    colDiv.className = "col";
+
+    const userAddressDiv = document.createElement("div");
+    userAddressDiv.textContent = invite.user.toAddress();
+    userAddressDiv.className = "user-address";
+    colDiv.appendChild(userAddressDiv);
+
+    const rejectButton = document.createElement("button");
+    rejectButton.className = "btn btn-outline-danger";
+    rejectButton.textContent = "Reject";
+    rejectButton.onclick = () => {
+        rejectInvite(invite).then(() => {
+            const index = receivedInvites.indexOf(invite);
+            receivedInvites.splice(index, 1);
+            displayReceivedInvites();
+        });
+    };
+    colDiv.appendChild(rejectButton);
+
+    const acceptButton = document.createElement("button");
+    acceptButton.className = "btn btn-outline-success";
+    acceptButton.textContent = "Accept";
+    colDiv.appendChild(acceptButton);
+
+    article.appendChild(imgBoxDiv);
+    article.appendChild(colDiv);
+
+    receivedInvitesBox.appendChild(article);
+
+}
+
+const rejectInvite = (invite) => {
+
+    //Remove channel
+    fetch(invite.user.serverAddress + "api/channel?" + new URLSearchParams({
+        accessKey: channelAccessKey
+    }), {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'bearer ' + jwt
+        }
+    }).then(response => {
+        if (response.status != 200) throw new Error("Channel not removed");
+    }).catch(e => {
+        console.log(e);
+    });
+
+    //Remove invite
+    return new Promise(resolve => {
+        fetch(url + "api/invite?" + new URLSearchParams({
+            inviteAccessKey: invite.accessKey,
+        }), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                resolve(true);
+            } else resolve(false);
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
 }
