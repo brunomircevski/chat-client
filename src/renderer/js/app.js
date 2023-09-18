@@ -84,6 +84,7 @@ const hideOverlays = () => {
 
 //OnLoad
 window.addEventListener("load", () => {
+    readChannels();
     readSentInvites();
     getReceivedInvites();
 });

@@ -130,6 +130,16 @@ const appendReceivedInvite = (invite) => {
     const acceptButton = document.createElement("button");
     acceptButton.className = "btn btn-outline-success";
     acceptButton.textContent = "Accept";
+    acceptButton.onclick = () => {
+        acceptInvite(invite).then((res) => {
+            if(res) {
+                addChannel(invite.channel);
+                const index = receivedInvites.indexOf(invite);
+                receivedInvites.splice(index, 1);
+                displayReceivedInvites();
+            }
+        });
+    };
     colDiv.appendChild(acceptButton);
 
     article.appendChild(imgBoxDiv);
@@ -143,17 +153,61 @@ const rejectInvite = (invite) => {
 
     //Remove channel
     fetch(invite.user.serverAddress + "api/channel?" + new URLSearchParams({
-        accessKey: channelAccessKey
+        accessKey: invite.channelAccessKey
     }), {
         method: 'DELETE',
         headers: {
-            'Accept': 'application/json',
-            'Authorization': 'bearer ' + jwt
+            'Accept': 'application/json'
         }
     }).then(response => {
         if (response.status != 200) throw new Error("Channel not removed");
     }).catch(e => {
         console.log(e);
+    });
+
+    //Remove invite
+    return new Promise(resolve => {
+        fetch(url + "api/invite?" + new URLSearchParams({
+            inviteAccessKey: invite.accessKey,
+        }), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                resolve(true);
+            } else resolve(false);
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
+}
+
+const acceptInvite = (invite) => {
+
+    let error = false;
+
+    //Activate channel
+    fetch(invite.user.serverAddress + "api/channel/activate?" + new URLSearchParams({
+        accessKey: invite.channelAccessKey
+    }), {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.status != 200) {
+            throw new Error("Could not activate channel");
+            error = true;
+        }
+    }).catch(e => {
+        console.log(e);
+    });
+
+    if(error) return new Promise(resolve => {
+        resolve(false);
     });
 
     //Remove invite

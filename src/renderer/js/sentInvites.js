@@ -14,7 +14,13 @@ const readSentInvites = () => {
         const obj = JSON.parse(invitesJSON);
 
         obj.forEach(inv => {
-            sentInvites.push(new Invite(new User(inv.user.username, inv.user.serverAddress), inv.accessKey, inv.channelAccessKey, new Date(inv.time)));
+            sentInvites.push(
+                new Invite(new User(inv.user.username, inv.user.serverAddress),
+                inv.accessKey,
+                inv.channelAccessKey,
+                new Date(inv.time),
+                inv.channel, //NOT CHANNEL CLASS - TO FIX
+            ));
         });
     }
     catch (e) {
@@ -49,6 +55,7 @@ const updateInvitesStatus = async () => {
 
     for (i = sentInvites.length - 1; i >= 0; i--) {
         const status = await getInviteStatus(sentInvites[i].user.serverAddress, sentInvites[i].accessKey);
+
         if (status == "notfound") {
             checkAndProcessInvite(sentInvites[i])
             sentInvites.splice(i, 1);
@@ -59,43 +66,36 @@ const updateInvitesStatus = async () => {
     inviteListSpinner.classList.add("display-none");
     updateInvitesOverlay();
 
-    if(inviteWasRemoved) saveInvites();
+    if (inviteWasRemoved) saveInvites();
 }
 
-const checkAndProcessInvite = async (invite) => {
+const checkAndProcessInvite = (invite) => {
     let channelActive = false, error = false;
 
-    await new Promise(resolve => {
-        fetch(invite.user.serverAddress + "api/channel/status?" + new URLSearchParams({
-            accessKey: accessKey
-        }), {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(response => {
-            if (response.status == 200) {
-                response.json().then(res => {
-                    if(res.active === true) channelActive = true;
-                    resolve();
-                });
-            } else if(response.status != 404) {
-                throw new Error("Channel not found, can't check status")
-            } 
-            resolve();
-        }).catch(e => {
-            error = true;
-            console.log(e);
-            resolve();
-        });
+    fetch(invite.user.serverAddress + "api/channel/status?" + new URLSearchParams({
+        accessKey: invite.channel.accessKey
+    }), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.status == 200) {
+            response.json().then(res => {
+                if (res.active === true) {
+                    displayResolvedInvite(invite, "accepted"); 
+                    addChannel(invite.channel);
+                } else {
+                    displayResolvedInvite(invite, "rejected"); 
+                }
+            });
+        } else if (response.status != 404) {
+            throw new Error("Channel not found, can't check status")
+        }
+    }).catch(e => {
+        console.log(e);
+        displayResolvedInvite(invite, "notfound");
     });
-
-    let status;
-    if(channelActive) status = "accepted"
-    if(!channelActive) status = "rejected"
-    if(error) status = "notfound"
-
-    displayResolvedInvite(invite, status); // HERE
 }
 
 const getInviteStatus = (address, accessKey) => {
@@ -140,6 +140,10 @@ const appendRowToInvitesTable = (invite) => {
     cancelButton.textContent = 'Cancel';
     cancelButton.onclick = () => {
         cancelInvite(invite.accessKey).then(() => {
+            sentInvitesTable.querySelectorAll('tbody tr').forEach(row => {
+                row.parentNode.removeChild(row);
+            });
+
             updateInvitesOverlay();
             saveInvites();
         });
@@ -165,12 +169,15 @@ const displayResolvedInvite = (invite, status) => {
 
     const statusCell = document.createElement('td');
 
-    if(status) {
+    if (status == "accepted") {
         statusCell.style.color = 'green';
         statusCell.textContent = 'Accepted';
-    } else {
+    } else if (status == "rejected") {
         statusCell.style.color = 'red';
         statusCell.textContent = 'Rejected';
+    } else {
+        statusCell.style.color = 'lightgrey';
+        statusCell.textContent = 'Not found';
     }
 
     row.appendChild(addressCell);
@@ -181,8 +188,8 @@ const displayResolvedInvite = (invite, status) => {
     sentInvitesTable.querySelector('tbody').appendChild(row);
 }
 
-const addInvite = (user, accessKey, channelAccessKey) => {
-    sentInvites.push(new Invite(user, accessKey, channelAccessKey, new Date()));
+const addInvite = (user, accessKey, channel) => {
+    sentInvites.push(new Invite(user, accessKey, channel.channelAccessKey, new Date(), channel));
 
     updateInvitesOverlay();
     saveInvites();
@@ -308,7 +315,7 @@ const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPe
                 if (res.accessKey) {
                     inviteSpinner.classList.add("display-none");
                     inviteError.classList.add("display-none");
-                    addInvite(user, res.accessKey, channelAccessKey);
+                    addInvite(user, res.accessKey, channel);
                     inviteUsernameInput.value = '';
                 } else {
                     throw Error("No invite access key returned");

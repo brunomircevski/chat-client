@@ -1,10 +1,10 @@
 class Invite {
-    constructor(user, accessKey, channelAccessKey, time) {
+    constructor(user, accessKey, channelAccessKey, time, channel) {
         this.user = user;
         this.accessKey = accessKey;
         this.channelAccessKey = channelAccessKey;
         this.time = time;
-        this.channel = undefined;
+        this.channel = channel;
     }
 }
 

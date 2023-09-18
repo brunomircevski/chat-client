@@ -132,6 +132,7 @@ const deriveSymmetricKey = (privateKey) => {
 
 const getUserData = async () => {
 
+    //Get my invites
     await new Promise(resolve => {
         fetch(url + "api/data/invites", {
             method: 'GET',
@@ -148,6 +149,32 @@ const getUserData = async () => {
                 });
             } else {
                 console.log("Could not get invites data");
+                resolve();
+            }
+            
+        }).catch(e => {
+            console.log(e);
+            resolve();
+        });
+    });
+
+    //Get user data
+    await new Promise(resolve => {
+        fetch(url + "api/data/user", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'bearer ' + jwt
+            }
+        }).then(response => {
+            if (response.status == 200) {
+                response.json().then(res => {
+                    store.set('userdata', res.data)
+                    console.log("Updated user data");
+                    resolve();
+                });
+            } else {
+                console.log("Could not get user data");
                 resolve();
             }
             
