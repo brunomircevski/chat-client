@@ -46,7 +46,7 @@ const getReceivedInvites = async () => {
 
             let user;
 
-            if (!userIsMe(channelObj.users[0].username, channelObj.users[0].serverAddress)) {
+            if (!userIsMe(channelObj.users[0])) {
                 user = new User(channelObj.users[0].username, channelObj.users[0].serverAddress);
             } else {
                 user = new User(channelObj.users[1].username, channelObj.users[1].serverAddress);

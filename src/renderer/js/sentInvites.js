@@ -14,13 +14,7 @@ const readSentInvites = () => {
         const obj = JSON.parse(invitesJSON);
 
         obj.forEach(inv => {
-            sentInvites.push(
-                new Invite(new User(inv.user.username, inv.user.serverAddress),
-                inv.accessKey,
-                inv.channelAccessKey,
-                new Date(inv.time),
-                inv.channel, //NOT CHANNEL CLASS - TO FIX
-            ));
+            sentInvites.push(toInvite(inv));
         });
     }
     catch (e) {

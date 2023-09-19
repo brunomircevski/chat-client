@@ -87,4 +87,5 @@ window.addEventListener("load", () => {
     readChannels();
     readSentInvites();
     getReceivedInvites();
+    displayChannels();
 });

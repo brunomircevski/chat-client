@@ -8,12 +8,8 @@ const readChannels = () => {
         const obj = JSON.parse(decryptedJSON);
 
         obj.channels.forEach(ch => {
-            channels.push(new Channel(
-                ch.accessKey,
-                ch.encryptionKey, 
-                [new User(ch.users[0].username, ch.users[0].serverAddress), new User(ch.users[1].username, ch.users[1].serverAddress)],
-                ch.serverAddress,
-                true));
+            ch.active = true;
+            channels.push(toChannel(ch));
         });
     }
     catch (e) {
@@ -29,7 +25,7 @@ const addChannel = (channel) => {
 }
 
 const saveUserdata = () => {
-    let userdata = { 
+    let userdata = {
         channels: channels,
     };
 
@@ -38,7 +34,7 @@ const saveUserdata = () => {
     store.set('userdata', encryptedJSON);
 
     uploadUserdata(encryptedJSON);
-} 
+}
 
 //Upload userdata to server
 const uploadUserdata = (data) => {
@@ -57,5 +53,59 @@ const uploadUserdata = (data) => {
         }
     }).catch(e => {
         console.log(e);
+    });
+}
+
+//Displaying channels
+
+const channelBox = document.getElementById("chat-container");
+
+const displayChannels = () => {
+    while (channelBox.firstChild) {
+        channelBox.removeChild(channelBox.firstChild);
+    }
+
+    channels.forEach(channel => {
+
+        const channelName = channel.getName();
+        const letter = channelName.slice(0, 1).toUpperCase();
+
+        // Create the elements
+        const article = document.createElement("article");
+        article.classList.add("row", "chat");
+
+        const imgBox = document.createElement("div");
+        imgBox.classList.add("col", "chat-img-box");
+
+        const img = document.createElement("div");
+        img.classList.add("chat-img", "bg-gradient-" + Number(Number(letter.charCodeAt(0)%5)+1));
+        img.textContent = letter;
+
+        const textBox = document.createElement("div");
+        textBox.classList.add("col", "chat-text-box");
+
+        const chatName = document.createElement("h5");
+        chatName.classList.add("h5");
+        chatName.textContent = channelName;
+
+        const lastMessageTime = document.createElement("span");
+        lastMessageTime.classList.add("chat-last-message-time");
+        lastMessageTime.textContent = "24/03/2023"; //Change
+
+        const lastMessage = document.createElement("span");
+        lastMessage.classList.add("chat-last-message");
+        lastMessage.textContent = "This is newest message that should be shortened because it's too long"; //Change
+
+        // Append elements to the structure
+        imgBox.appendChild(img);
+        textBox.appendChild(chatName);
+        textBox.appendChild(lastMessageTime);
+        textBox.appendChild(lastMessage);
+
+        article.appendChild(imgBox);
+        article.appendChild(textBox);
+
+        // Append the structure to the channelBox
+        channelBox.appendChild(article);
     });
 }
