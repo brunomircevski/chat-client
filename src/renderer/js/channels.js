@@ -22,6 +22,7 @@ const addChannel = (channel) => {
     channel.active = true;
     channels.push(channel);
     saveUserdata();
+    displayChannels();
 }
 
 const saveUserdata = () => {
@@ -73,6 +74,9 @@ const displayChannels = () => {
         // Create the elements
         const article = document.createElement("article");
         article.classList.add("row", "chat");
+        article.onclick = () => {
+            switchToChannel(channel)
+        };
 
         const imgBox = document.createElement("div");
         imgBox.classList.add("col", "chat-img-box");

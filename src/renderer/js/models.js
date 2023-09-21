@@ -46,6 +46,16 @@ class User {
     };
 }
 
+class Message {
+    constructor(content, type, user, uuid, date) {
+        this.content = content;
+        this.type = type;
+        this.user = user;
+        this.date = date;
+        this.uuid = uuid;
+    }
+}
+
 //Convert to class object
 const toChannel = (obj) => {
     try {

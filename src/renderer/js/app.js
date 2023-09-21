@@ -15,6 +15,8 @@ const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
 const symmetricKey = window.sessionStorage.getItem('symmetricKey');
 const jwt = window.sessionStorage.getItem('jwt');
 
+let loading = true;
+
 //UI
 const sendMessageInput = document.getElementById("message-input");
 const sendMessageBtn = document.getElementById("message-send");
@@ -51,7 +53,8 @@ sendMessageForm.addEventListener("submit", (event) => {
 
     if (message == "") return;
 
-    console.log(message);
+    sendTextMessage(message);
+
     sendMessageInput.style.height = "36px";
     messagesOuterBox.style.height = "calc( 100vh - 140px )";
     sendMessageInput.value = "";
@@ -88,4 +91,6 @@ window.addEventListener("load", () => {
     readSentInvites();
     getReceivedInvites();
     displayChannels();
+    updateInvitesStatus();
+    loading = false;
 });
