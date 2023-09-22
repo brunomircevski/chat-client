@@ -1,5 +1,7 @@
 let activeChannel;
 
+const messagesBox = document.getElementById("messages-box");
+
 const switchToChannel = async (channel) => {
     if(loading) return; 
     loading = true; //Set loading true until messages are displayed
@@ -8,7 +10,7 @@ const switchToChannel = async (channel) => {
     
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
     const messages = await decryptChannelMessages(encryptedMessagesRes.messages);
-    console.log(messages);
+    displayMessages(messages);
 
     sendMessageInput.disabled = false;
     loading = false;
@@ -49,7 +51,7 @@ const getEncryptedChannelMessages = (channel) => {
     return new Promise(resolve => {
         fetch(channel.serverAddress + "api/message?" + new URLSearchParams({
             accessKey: channel.accessKey,
-            number: 100
+            number: 50
         }), {
             method: 'GET',
             headers: {
@@ -71,8 +73,43 @@ const getEncryptedChannelMessages = (channel) => {
     });
 }
 
-const decryptChannelMessages = (messages) => {
+const decryptChannelMessages = (encryptedMessages) => {
     return new Promise(resolve => {
-        resolve(res); //TODO
+        let messages = [];
+
+        try {
+            encryptedMessages.forEach(m => {
+                const decryptedJSON = aes256.decrypt(activeChannel.encryptionKey, m.content);
+                const decryptedObj = JSON.parse(decryptedJSON)
+
+                const message = new Message(
+                    decryptedObj.content, 
+                    decryptedObj.type, 
+                    toUser(decryptedObj.user),
+                    m.uuid,
+                    new Date(m.date)
+                );
+
+                messages.push(message);
+            });
+
+        } catch(e) {
+            console.log(e);
+            messages.push(new Message(
+                "Error. Could not decrypt messages.", 
+                "error", 
+                null,
+                null,
+                new Date()
+            ));
+        }
+
+        resolve(messages);
+    });
+}
+
+const displayMessages = (messages) => {
+    messages.forEach(m => {
+        console.log(m); // DISPLAY MESSAGES
     });
 }
