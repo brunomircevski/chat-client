@@ -54,6 +54,10 @@ class Message {
         this.date = date;
         this.uuid = uuid;
     }
+
+    isMine = () => {
+        return userIsMe(this.user);
+    };
 }
 
 //Convert to class object

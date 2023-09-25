@@ -28,7 +28,7 @@ body {
 }
 
 .messages-outer-box {
-    height: calc(100vh - 140px);
+    height: calc(100vh - 125px);
 }
 
 .message-input-box {
@@ -199,6 +199,10 @@ body {
     font-weight: bold;
 }
 
+.message-container:last-child {
+    margin-bottom: 10px;
+}
+
 .message p {
     margin: 0;
 }
@@ -298,6 +302,14 @@ body {
 
 .received-invites .invite button {
     margin-right: 10px;
+}
+
+.message-container.date-info {
+    background-color: var(--message-bg);
+    border-radius: 5px;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3px;
 }
 
 /*Scrollbar*/
