@@ -56,7 +56,7 @@ const sameDay = (d1, d2) => {
         d1.getDate() === d2.getDate();
 }
 
-formatDateToLocalDate = (date) => {
+const formatDateToLocalDate = (date) => {
     if(sameDay(date, new Date())) return "Today";
 
     const yesterday = new Date()

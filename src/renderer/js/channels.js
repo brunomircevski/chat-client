@@ -26,8 +26,12 @@ const addChannel = (channel) => {
 }
 
 const saveUserdata = () => {
+    const channelsToSave = channels.map(channel => {
+        return new Channel(channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined);
+    });
+
     let userdata = {
-        channels: channels,
+        channels: channelsToSave,
     };
 
     const userdataJSON = JSON.stringify(userdata);
@@ -69,7 +73,6 @@ const displayChannels = () => {
     channels.forEach(channel => {
 
         const channelName = channel.getName();
-        const letter = channelName.slice(0, 1).toUpperCase();
 
         // Create the elements
         const article = document.createElement("article");
@@ -82,8 +85,8 @@ const displayChannels = () => {
         imgBox.classList.add("col", "chat-img-box");
 
         const img = document.createElement("div");
-        img.classList.add("chat-img", "bg-gradient-" + Number(Number(letter.charCodeAt(0)%5)+1));
-        img.textContent = letter;
+        img.classList.add("chat-img", "bg-gradient-" + channel.getNumber());
+        img.textContent = channel.getFirstLetter();
 
         const textBox = document.createElement("div");
         textBox.classList.add("col", "chat-text-box");

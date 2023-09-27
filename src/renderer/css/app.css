@@ -34,7 +34,7 @@ body {
 .message-input-box {
     background-color: var(--bg-lighter);
     border-top: 1px solid black;
-    padding: 10px 10px 0 10px;
+    padding: 10px 0 0 0;
     width: 100%;
 }
 
@@ -53,7 +53,7 @@ body {
     color: #cccccc;
     resize: none;
     padding: 5px;
-    width: calc( 100% - 50px ); 
+    width: calc( 100% - 90px ); 
     height: 36px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -73,6 +73,18 @@ body {
 
 .icon-btn:hover img {
     opacity: 0.5;
+}
+
+.emoji-menu-icon img {
+    height: 30px;
+    filter: invert(100%);
+    opacity: 0.2;
+}
+
+.emoji-menu-icon {
+    transform: translate(10px, -12px);
+    display: inline-block;
+    cursor: pointer;
 }
 
 .header {

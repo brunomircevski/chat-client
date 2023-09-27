@@ -36,7 +36,7 @@ sendMessageInput.addEventListener("input", () => {
     let h = 2 + sendMessageInput.scrollHeight;
     if (h > 200) h = 200;
     sendMessageInput.style.height = h + "px";
-    h += 104;
+    h += 89;
     messagesOuterBox.style.height = "calc( 100vh - " + h + "px )";
 });
 
@@ -53,10 +53,11 @@ sendMessageForm.addEventListener("submit", (event) => {
 
     if (message == "") return;
 
+    //console.log(message)
     sendTextMessage(message);
 
     sendMessageInput.style.height = "36px";
-    messagesOuterBox.style.height = "calc( 100vh - 140px )";
+    messagesOuterBox.style.height = "calc( 100vh - 125px )";
     sendMessageInput.value = "";
 });
 

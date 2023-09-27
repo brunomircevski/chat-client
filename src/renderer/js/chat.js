@@ -1,6 +1,7 @@
 let activeChannel;
 
 const messagesBox = document.getElementById("messages-box");
+const chatTitle = document.getElementById("chat-title");
 
 const switchToChannel = async (channel) => {
     if (loading) return;
@@ -8,6 +9,7 @@ const switchToChannel = async (channel) => {
 
     activeChannel = channel;
     messagesBox.innerHTML = '';
+    chatTitle.innerText = channel.getName();
 
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
     const messages = await decryptChannelMessages(encryptedMessagesRes.messages);
@@ -28,8 +30,11 @@ const sendMessage = (message) => {
     if (!activeChannel.accessKey) return;
 
     const messageJSON = JSON.stringify(message);
+    console.log(message, messageJSON);
+
     const encryptedJSON = aes256.encrypt(activeChannel.encryptionKey, messageJSON);
 
+    /*
     fetch(url + "api/message", {
         method: 'POST',
         headers: {
@@ -45,7 +50,7 @@ const sendMessage = (message) => {
         }
     }).catch(e => {
         console.log(e);
-    });
+    });*/
 
     appendMessage(message);
 }
@@ -127,8 +132,8 @@ const appendMessage = (message) => {
 
     const isMessageMine = message.isMine();
 
-    if(message.date == undefined) message.date = new Date();
-    if(lastDate == null || !sameDay(message.date, lastDate)) {
+    if (message.date == undefined) message.date = new Date();
+    if (lastDate == null || !sameDay(message.date, lastDate)) {
         isLastMessageMine = undefined;
         appendDayInfo(message.date);
     }
@@ -150,7 +155,15 @@ const appendMessage = (message) => {
     }
 
     const p = document.createElement('p');
-    p.textContent = message.content;
+
+    const lines = message.content.split('\n');
+    lines.forEach((line, index) => {
+        p.appendChild(document.createTextNode(line));
+        if (index < lines.length - 1) {
+            const lineBreak = document.createElement('br');
+            p.appendChild(lineBreak);
+        }
+    });
 
     const span = document.createElement('span');
     span.className = 'date';
@@ -160,7 +173,7 @@ const appendMessage = (message) => {
     messageDiv.appendChild(span);
 
     messageContainerHeader.appendChild(messageDiv);
-    if(forceScroll) scrollToBottom();
+    if (forceScroll) scrollToBottom();
 }
 
 const createMessageContainer = (isMine) => {
@@ -178,8 +191,8 @@ const createMessageContainer = (isMine) => {
         iconDiv.className = 'col icon-col';
 
         const chatImg = document.createElement('div');
-        chatImg.className = 'chat-img-sm bg-gradient-1';
-        chatImg.textContent = 'A';
+        chatImg.className = 'chat-img-sm bg-gradient-' + activeChannel.getNumber();
+        chatImg.textContent = activeChannel.getFirstLetter();
 
         iconDiv.appendChild(chatImg);
 

@@ -21,15 +21,35 @@ class Channel {
         this.active = active;
     }
 
+    #name
+    #letter
+    #number
+
     getName = () => {
+        if(this.#name) return this.#name;
+
         let name = "";
         this.users.forEach(user => {
             if(!userIsMe(user)) name += user.username + ", ";
         });
         
-        return name.slice(0, -2);
+        this.#name = name.slice(0, -2)
+        return this.#name;
     };
+
+    getFirstLetter = () => {
+        if(this.#letter) return this.#letter;
+        this.#letter = this.getName().slice(0, 1).toUpperCase();
+        return this.#letter;
+    }
+
+    getNumber = () => {
+        if(this.#number) return this.#number;
+        this.#number =  Number(this.getFirstLetter().charCodeAt(0)%5+1);
+        return this.#number;
+    }
 }
+
 
 class User {
     constructor(username, serverAddress) {
