@@ -53,16 +53,37 @@ body {
     color: #cccccc;
     resize: none;
     padding: 5px;
-    width: calc( 100% - 90px ); 
+    width: calc(100% - 90px);
     height: 36px;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-#message-send {
+#message-send,
+#emoji-btn {
     border: none;
     background-color: transparent;
     transform: translate(10px, -12px);
+}
+
+#emoji-btn {
+    padding: 0;
+}
+
+#emoji-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: 25px auto;
+    max-width: 550px;
+    justify-items: center;
+    gap: 10px;
+}
+
+.emoji-icon {
+    font-size: 48px;
+    background-color: transparent;
+    border: none;
+    padding: 0;
 }
 
 .icon-btn img {
@@ -194,6 +215,19 @@ body {
     position: relative;
 }
 
+.emoji-message {
+    background-color: transparent !important;
+    font-size: 60px;
+}
+
+.emoji-message .emoji {
+    transform: translateY(-10px);
+}
+
+.emoji-message .date {
+    opacity: 0.7;
+}
+
 .icon-col {
     flex: 0 0 50px;
     padding: 0;
@@ -201,7 +235,7 @@ body {
 
 .my-message-col .message {
     background-color: var(--my-message-bg);
-    margin-left: auto; 
+    margin-left: auto;
     margin-right: 0;
 }
 
@@ -280,7 +314,7 @@ body {
 }
 
 #invites-overlay .add-chat-form form input {
-    width: calc( 100% - 110px );
+    width: calc(100% - 110px);
     display: inline;
     border: 1px solid var(--border-lighter);
 }
@@ -300,7 +334,7 @@ body {
     margin-bottom: 20px;
 }
 
-.received-invites > h5 {
+.received-invites>h5 {
     margin-left: 18px;
     color: var(--text-primary);
 }
@@ -308,6 +342,7 @@ body {
 .received-invites .invite {
     cursor: auto;
 }
+
 .received-invites .invite .user-address {
     margin-top: 2px;
 }

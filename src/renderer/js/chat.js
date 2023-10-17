@@ -25,16 +25,21 @@ const sendTextMessage = (messageText) => {
     sendMessage(message);
 }
 
+const sendEmoji = (emoji) => {
+    const message = new Message(emoji, "emoji", me, undefined, undefined);
+
+    sendMessage(message);
+}
+
 const sendMessage = (message) => {
     if (!activeChannel) return;
     if (!activeChannel.accessKey) return;
 
     const messageJSON = JSON.stringify(message);
-    console.log(message, messageJSON);
+    //console.log(message, messageJSON);
 
     const encryptedJSON = aes256.encrypt(activeChannel.encryptionKey, messageJSON);
 
-    /*
     fetch(url + "api/message", {
         method: 'POST',
         headers: {
@@ -50,7 +55,7 @@ const sendMessage = (message) => {
         }
     }).catch(e => {
         console.log(e);
-    });*/
+    });
 
     appendMessage(message);
 }
@@ -128,7 +133,7 @@ const displayMessages = (messages) => {
 }
 
 const appendMessage = (message) => {
-    const forceScroll = messagesBox.scrollHeight - messagesBox.clientHeight - messagesBox.scrollTop <= 50;
+    const forceScroll = messagesBox.scrollHeight - messagesBox.clientHeight - messagesBox.scrollTop <= 300;
 
     const isMessageMine = message.isMine();
 
@@ -145,32 +150,52 @@ const appendMessage = (message) => {
     isLastMessageMine = isMessageMine;
 
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'message';
 
-    if (messageContainerHeader.childElementCount === 0 && !isMessageMine) {
-        const messageContainerUsername = document.createElement('div');
-        messageContainerUsername.className = 'message-container-header';
-        messageContainerUsername.textContent = message.user.username;
-        messageDiv.appendChild(messageContainerUsername);
-    }
+    if (message.type == "text") {
 
-    const p = document.createElement('p');
+        messageDiv.className = 'message';
 
-    const lines = message.content.split('\n');
-    lines.forEach((line, index) => {
-        p.appendChild(document.createTextNode(line));
-        if (index < lines.length - 1) {
-            const lineBreak = document.createElement('br');
-            p.appendChild(lineBreak);
+        if (messageContainerHeader.childElementCount === 0 && !isMessageMine) {
+            const messageContainerUsername = document.createElement('div');
+            messageContainerUsername.className = 'message-container-header';
+            messageContainerUsername.textContent = message.user.username;
+            messageDiv.appendChild(messageContainerUsername);
         }
-    });
 
-    const span = document.createElement('span');
-    span.className = 'date';
-    span.textContent = formatDateToTime(message.date)
+        const p = document.createElement('p');
 
-    messageDiv.appendChild(p);
-    messageDiv.appendChild(span);
+        const lines = message.content.split('\n');
+        lines.forEach((line, index) => {
+            p.appendChild(document.createTextNode(line));
+            if (index < lines.length - 1) {
+                const lineBreak = document.createElement('br');
+                p.appendChild(lineBreak);
+            }
+        });
+
+        const span = document.createElement('span');
+        span.className = 'date';
+        span.textContent = formatDateToTime(message.date)
+
+        messageDiv.appendChild(p);
+        messageDiv.appendChild(span);
+
+    } else if(message.type == "emoji") {
+
+        messageDiv.className = 'message emoji-message';
+
+        const emojiDiv = document.createElement('div');
+        emojiDiv.className = 'emoji';
+        emojiDiv.innerHTML = "&#" + message.content + ";";
+
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'date';
+        dateSpan.textContent = formatDateToTime(message.date)
+
+        messageDiv.appendChild(emojiDiv);
+        messageDiv.appendChild(dateSpan);
+
+    }
 
     messageContainerHeader.appendChild(messageDiv);
     if (forceScroll) scrollToBottom();

@@ -115,10 +115,10 @@
             <form id="message-form">
               <textarea id="message-input" placeholder="Write a message..." disabled="true"></textarea>
               <button id="message-send" class="icon-btn"><img src="img/send.svg" alt="Send"></button>
-              <span class="emoji-menu-icon icon-btn">
-                <img src="img/emoji-icon.svg" alt="Send">
+              <button class="emoji-menu-icon icon-btn" id="emoji-btn">
+                <img src="img/emoji-icon.svg" alt="Show emoji">
                 <!--Vectors and icons by <a href="https://www.bypeople.com/minimal-free-pixel-perfect-icons/?ref=svgrepo.com" target="_blank">Bypeople</a> in PD License via <a href="https://www.svgrepo.com/" target="_blank">SVG Repo</a>-->
-              </span>
+              </button>
             </form>
           </div>
         </div>
@@ -165,7 +165,12 @@
           <div class="text-muted mt-1">When user accepts an invite you will see them in your contacts.</div>
         </div>
       </div>
-      <div class="overlay-content display-none">B</div>
+      <div class="overlay-content display-none" id="emoji-overlay">
+        <h2 class="h2 text-center">Reactions</h2>
+        <div id="emoji-container">
+          <!-- Emojis are generated here in JS -->
+        </div>
+      </div>
       <div class="overlay-content display-none">C</div>
     </div>
   </div>

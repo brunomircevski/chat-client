@@ -28,8 +28,10 @@ const closeOverlayBtn = document.getElementById("close-overlay-btn");
 
 const allOverlays = document.getElementsByClassName("overlay-content");
 const invitesOverlay = document.getElementById("invites-overlay");
+const emojiOverlay = document.getElementById("emoji-overlay");
 
 const addChatBtn = document.getElementById("add-chat-btn");
+const openEmojisBtn = document.getElementById("emoji-btn");
 
 sendMessageInput.addEventListener("input", () => {
     sendMessageInput.style.height = "1px";
@@ -75,14 +77,37 @@ addChatBtn.addEventListener("click", (e) => {
     e.preventDefault();
     overlay.classList.remove("display-none");
     invitesOverlay.classList.remove("display-none");
-    
+
     updateInvitesStatus();
+});
+
+openEmojisBtn.addEventListener("click", (e) => {
+    overlay.classList.remove("display-none");
+    emojiOverlay.classList.remove("display-none");
 });
 
 const hideOverlays = () => {
     overlay.classList.add("display-none");
     for (i = 0; i < allOverlays.length; i++) {
         allOverlays[i].classList.add("display-none");
+    }
+};
+
+//Generate emojis
+const emojiContainer = document.getElementById("emoji-container");
+const emojis = ["128512", "128516", "128525", "128151", "128513", "128514", "128517", "128518", "128526", "128564", "128528", "128557", "128539", "128544", "128546", "128551", "129321", "129392", "128054", "128049", "128176"];
+
+const generateEmojis = () => {
+    for (const emoji of emojis) {
+        const emojiBtn = document.createElement("button");
+        emojiBtn.classList.add("emoji-icon");
+        emojiBtn.innerHTML = "&#" + emoji + ";";
+        emojiBtn.onclick = () => {
+            sendEmoji(emoji);
+            hideOverlays();
+        }
+
+        emojiContainer.appendChild(emojiBtn);
     }
 };
 
@@ -93,5 +118,6 @@ window.addEventListener("load", () => {
     getReceivedInvites();
     displayChannels();
     updateInvitesStatus();
+    generateEmojis();
     loading = false;
 });
