@@ -79,6 +79,7 @@ addChatBtn.addEventListener("click", (e) => {
     invitesOverlay.classList.remove("display-none");
 
     updateInvitesStatus();
+    updateReceivedInvitesLoop();
 });
 
 openEmojisBtn.addEventListener("click", (e) => {
@@ -119,5 +120,16 @@ window.addEventListener("load", () => {
     displayChannels();
     updateInvitesStatus();
     generateEmojis();
+
+    invitesInterval = setInterval(getReceivedInvites, 60000);
+
     loading = false;
 });
+
+//Check for invites every 1 minute
+let invitesInterval;
+const updateReceivedInvitesLoop = () => {
+    clearInterval(invitesInterval);
+    getReceivedInvites();
+    invitesInterval = setInterval(getReceivedInvites, 60000);
+}

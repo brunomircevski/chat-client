@@ -1,7 +1,6 @@
 const receivedInvites = [];
 
 const getReceivedInvites = async () => {
-
     let result;
 
     //Get invites for me

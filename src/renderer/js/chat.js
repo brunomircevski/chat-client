@@ -5,7 +5,9 @@ const chatTitle = document.getElementById("chat-title");
 
 const switchToChannel = async (channel) => {
     if (loading) return;
-    loading = true; //Set loading true until messages are displayed
+    loading = true;
+
+    chathub.disconnect();
 
     activeChannel = channel;
     messagesBox.innerHTML = '';
@@ -16,6 +18,11 @@ const switchToChannel = async (channel) => {
     displayMessages(messages);
 
     sendMessageInput.disabled = false;
+    openEmojisBtn.disabled = false;
+    sendMessageBtn.disabled = false;
+
+    chathub.connect(channel.serverAddress, channel.accessKey);
+
     loading = false;
 }
 
@@ -57,7 +64,7 @@ const sendMessage = (message) => {
         console.log(e);
     });
 
-    appendMessage(message);
+    //appendMessage(message);
 }
 
 const getEncryptedChannelMessages = (channel) => {
@@ -121,6 +128,28 @@ const decryptChannelMessages = (encryptedMessages) => {
     });
 }
 
+const decryptMessage = (encryptedMessage) => {
+    try {
+        const decryptedJSON = aes256.decrypt(activeChannel.encryptionKey, encryptedMessage.content);
+        const decryptedObj = JSON.parse(decryptedJSON)
+
+        const message = new Message(
+            decryptedObj.content,
+            decryptedObj.type,
+            toUser(decryptedObj.user),
+            encryptedMessage.uuid,
+            new Date(encryptedMessage.date)
+        );
+
+        return message;
+
+    } catch (e) {
+        console.log(e);
+    }
+
+    return null;
+}
+
 //Displaying messages
 let messageContainerHeader;
 let isLastMessageMine;
@@ -180,7 +209,7 @@ const appendMessage = (message) => {
         messageDiv.appendChild(p);
         messageDiv.appendChild(span);
 
-    } else if(message.type == "emoji") {
+    } else if (message.type == "emoji") {
 
         messageDiv.className = 'message emoji-message';
 
