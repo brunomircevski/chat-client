@@ -273,7 +273,10 @@ const getPublicKeyAndSendInvite = (serverAddress, username, userAddress) => {
 
 const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPem) => {
 
-    const channelAccessKey = await getNewChannel();
+    const obj = await getNewChannel();
+    const channelAccessKey = obj[0];
+    const channelUUID = obj[1];
+    
     if (!channelAccessKey) {
         inviteError.innerText = "Could not create a new channel";
         inviteError.classList.remove("display-none");
@@ -285,7 +288,7 @@ const sendInvite = async (serverAddress, username, userAddress, usersPublicKeyPe
     const user = getUserFromAddress(userAddress);
     const users = [me, user];
 
-    const channel = new Channel(channelAccessKey, channelEncryptionKey, users, url, false);
+    const channel = new Channel(channelUUID, channelAccessKey, channelEncryptionKey, users, url, false);
     const inviteContent = JSON.stringify(channel);
 
     const encryptedInviteContent = aes256.encrypt(channelEncryptionKey, inviteContent)
@@ -343,7 +346,8 @@ const getNewChannel = () => {
                 response.json().then(res => {
                     if (!res.accessKey) new Error("No access key returned");
                     else {
-                        resolve(res.accessKey);
+                        const obj = [res.accessKey, res.uuid]
+                        resolve(obj);
                     }
                 });
 

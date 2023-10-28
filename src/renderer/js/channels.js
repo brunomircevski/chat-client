@@ -27,7 +27,7 @@ const addChannel = (channel) => {
 
 const saveUserdata = () => {
     const channelsToSave = channels.map(channel => {
-        return new Channel(channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined);
+        return new Channel(channel.uuid ,channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined);
     });
 
     let userdata = {
@@ -77,6 +77,7 @@ const displayChannels = () => {
         // Create the elements
         const article = document.createElement("article");
         article.classList.add("row", "chat");
+        article.id = "channel-"+channel.uuid;
         article.onclick = () => {
             switchToChannel(channel)
         };

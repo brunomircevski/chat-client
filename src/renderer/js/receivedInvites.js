@@ -2,6 +2,7 @@ const receivedInvites = [];
 
 const getReceivedInvites = async () => {
     let result;
+    receivedInvites.length = 0;
 
     //Get invites for me
     await new Promise(resolve => {
@@ -53,7 +54,7 @@ const getReceivedInvites = async () => {
 
             const invite = new Invite(user, inviteAccessKey, channelObj.accessKey, undefined);
 
-            const channel = new Channel(channelObj.accessKey, channelObj.encryptionKey, [user, me], channelObj.serverAddress, false)
+            const channel = new Channel(channelObj.uuid, channelObj.accessKey, channelObj.encryptionKey, [user, me], channelObj.serverAddress, false)
 
             invite.channel = channel;
 
@@ -91,6 +92,10 @@ const displayReceivedInvites = () => {
     receivedInvites.forEach(inv => {
         appendReceivedInvite(inv);
     });
+}
+
+const clearReceivedInvitesBox = () => {
+    
 }
 
 const appendReceivedInvite = (invite) => {

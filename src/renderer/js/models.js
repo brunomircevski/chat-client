@@ -13,7 +13,8 @@ class Invite {
 }
 
 class Channel {
-    constructor(accessKey, encryptionKey, users, serverAddress, active) {
+    constructor(uuid, accessKey, encryptionKey, users, serverAddress, active) {
+        this.uuid = uuid;
         this.encryptionKey = encryptionKey;
         this.accessKey = accessKey;
         this.users = users;
@@ -35,6 +36,10 @@ class Channel {
         
         this.#name = name.slice(0, -2)
         return this.#name;
+    };
+
+    getInfo = () => {
+        return "Communication on " + this.serverAddress;
     };
 
     getFirstLetter = () => {
@@ -90,6 +95,7 @@ const toChannel = (obj) => {
         });
 
         const channel = new Channel(
+            obj.uuid,
             obj.accessKey, 
             obj.encryptionKey, 
             users, 

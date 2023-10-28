@@ -2,9 +2,10 @@ let activeChannel;
 
 const messagesBox = document.getElementById("messages-box");
 const chatTitle = document.getElementById("chat-title");
+const chatSubTitle = document.getElementById("chat-subtitle");
 
 const switchToChannel = async (channel) => {
-    if (loading) return;
+    if (loading || channel === activeChannel) return;
     loading = true;
 
     chathub.disconnect();
@@ -12,6 +13,10 @@ const switchToChannel = async (channel) => {
     activeChannel = channel;
     messagesBox.innerHTML = '';
     chatTitle.innerText = channel.getName();
+    chatSubTitle.innerText = channel.getInfo();
+    messageContainerHeader = undefined;
+    isLastMessageMine = undefined;
+    lastDate = undefined;
 
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
     const messages = await decryptChannelMessages(encryptedMessagesRes.messages);
@@ -22,6 +27,11 @@ const switchToChannel = async (channel) => {
     sendMessageBtn.disabled = false;
 
     chathub.connect(channel.serverAddress, channel.accessKey);
+    
+    const selectedChannelArticle = document.getElementsByClassName("channel-active")[0];
+    if(selectedChannelArticle) selectedChannelArticle.classList.remove("channel-active");
+    
+    document.getElementById("channel-" + channel.uuid).classList.add("channel-active");
 
     loading = false;
 }
