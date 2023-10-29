@@ -57,12 +57,20 @@ const sameDay = (d1, d2) => {
 }
 
 const formatDateToLocalDate = (date) => {
-    if(sameDay(date, new Date())) return "Today";
+    if (sameDay(date, new Date())) return "Today";
 
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
 
-    if(sameDay(date, yesterday)) return "Yesterday";
+    if (sameDay(date, yesterday)) return "Yesterday";
 
-    return date.toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"}) 
+    return date.toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })
+}
+
+function formatDateToDDMMYYYY(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear(); 
+
+    return `${day}-${month}-${year}`;
 }

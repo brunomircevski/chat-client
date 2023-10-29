@@ -22,7 +22,6 @@ class Chathub {
     disconnect = async () => {
         if (this.#connection && this.#connection.state === signalR.HubConnectionState.Connected) {
             await this.#connection.stop();
-            console.log("disconnected");
         }
         this.#connectionGood = false;
     }
@@ -46,7 +45,6 @@ class Chathub {
 
         this.#connection.on("JoinRoomOk", data => {
             this.#connectionGood = true;
-            //console.log(data);
         });
 
         this.#connection.on("ReceivedMessage", data => {
