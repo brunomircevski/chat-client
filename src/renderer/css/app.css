@@ -297,6 +297,36 @@ body {
     color: var(--text-muted-my-message);
 }
 
+.outline-none, .outline-none:focus {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.settings-container {
+    margin: 25px auto;
+    max-width: 550px;
+}
+
+#account-name {
+    color: white;
+}
+
+.account-details {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-muted)
+}
+
+.checkbox-big input {
+    height: 25px;
+    width: 50px !important;
+    margin-right: 8px;
+}
+
+.checkbox-big label {
+    line-height: 34px !important;
+}
+
 /*Overlay*/
 .full-overlay {
     background-color: rgba(0, 0, 0, 0.6);

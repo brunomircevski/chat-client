@@ -17,6 +17,7 @@
   <script defer src="js/receivedInvites.js"></script>
   <script defer src="js/chat.js"></script>
   <script defer src="js/chathub.js"></script>
+  <script defer src="js/settings.js"></script>
 </head>
 
 <body>
@@ -57,7 +58,7 @@
         </div>
         <div class="row footer position-absolute bottom-0">
           <div class="col footer-menu">
-            <a href="" class="icon-btn"><img src="img/settings.svg" alt="Settings"></a>
+            <a href="" class="icon-btn" id="settings-btn"><img src="img/settings.svg" alt="Settings"></a>
             <a href="" class="icon-btn"><img src="img/info.svg" alt="Info"></a>
           </div>
         </div>
@@ -173,7 +174,21 @@
           <!-- Emojis are generated here in JS -->
         </div>
       </div>
-      <div class="overlay-content display-none">C</div>
+      <div class="overlay-content display-none" id="settings-overlay">
+        <h2 class="h2 text-center">Settings</h2>
+        <div class="settings-container">
+          <div class="account-details">
+            Name: <span id="account-name"></span><br>
+            Account id: <span id="account-id"></span>
+          </div>
+          <div class="settings">
+            <div class="form-check form-switch checkbox-big">
+              <label class="form-check-label" for="accepts-invites-checkbox">Accept invites from other users</label>
+              <input class="form-check-input outline-none" type="checkbox" id="accepts-invites-checkbox" disabled>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
