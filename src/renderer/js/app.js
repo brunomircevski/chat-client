@@ -133,3 +133,11 @@ const updateReceivedInvitesLoop = () => {
     getReceivedInvites();
     invitesInterval = setInterval(getReceivedInvites, 60000);
 }
+
+//Save userdata on change every ~1 minute
+const saveUserdataLoop = () => {
+    if(!channelLastMessageTimeUpdated) return;
+    channelLastMessageTimeUpdated = false;
+    saveUserdata();
+}
+let userdataSaveInterval = setInterval(saveUserdataLoop, 63000);

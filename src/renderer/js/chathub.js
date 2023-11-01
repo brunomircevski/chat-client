@@ -50,6 +50,7 @@ class Chathub {
         this.#connection.on("ReceivedMessage", data => {
             const message = decryptMessage(data);
             if(message != null) appendMessage(message);
+            updateChannelLastMessage(message);
         });
     }
 }

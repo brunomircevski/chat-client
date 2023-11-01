@@ -67,10 +67,31 @@ const formatDateToLocalDate = (date) => {
     return date.toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })
 }
 
-function formatDateToDDMMYYYY(date) {
+const formatDateToLocalDateTime = (date) => {
+    if (!date) return "No messages";
+
+    if (sameDay(date, new Date())) {
+        return formatTime(date);
+    }
+
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+
+    if (sameDay(date, yesterday)) return "Yesterday " + formatTime(date);
+
+    return date.toLocaleDateString('en-us', { month: "short", day: "numeric" })
+}
+
+const formatDateToDDMMYYYY = (date) => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear(); 
+    const year = date.getFullYear();
 
     return `${day}-${month}-${year}`;
+}
+
+const formatTime = (date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return hours + ":" + minutes;
 }

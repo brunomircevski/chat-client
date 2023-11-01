@@ -5,6 +5,8 @@ const messagesBox = document.getElementById("messages-box");
 const chatTitle = document.getElementById("chat-title");
 const chatSubTitle = document.getElementById("chat-subtitle");
 
+let channelLastMessageTimeUpdated = false;
+
 const switchToChannel = async (channel) => {
     if (loading || channel === activeChannel) return;
     loading = true;
@@ -12,18 +14,10 @@ const switchToChannel = async (channel) => {
     chathub.disconnect();
 
     activeChannel = channel;
-    messagesBox.innerHTML = '';
     chatTitle.innerText = channel.getName();
     chatSubTitle.innerText = channel.getInfo();
-    messageContainerHeader = undefined;
-    isLastMessageMine = undefined;
-    lastDate = undefined;
-    messageContainerHeaderBack = undefined;
-    isLastMessageMineBack = undefined;
-    lastDateBack = undefined;
-    messages.length = 0;
-    noOlderMessages = false;
-    loadingOlderMessages = false;
+
+    channelReset();
 
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
     const decryptedMessages = await decryptChannelMessages(encryptedMessagesRes.messages);
@@ -38,10 +32,32 @@ const switchToChannel = async (channel) => {
 
     document.getElementById("channel-" + channel.uuid).classList.add("channel-active");
 
+    if (messages.length > 0) {
+        const lastMessage = messages[messages.length - 1];
+
+        if(activeChannel.lastMessageDate.getTime() != lastMessage.date.getTime()) {
+            activeChannel.lastMessageDate = lastMessage.date;
+            updateChannelLastMessage(lastMessage);
+        }
+    }
+
     chathub.connect(channel.serverAddress, channel.accessKey);
 
     loading = false;
 }
+
+const channelReset = () => {
+    messagesBox.innerHTML = '';
+    messageContainerHeader = undefined;
+    isLastMessageMine = undefined;
+    lastDate = undefined;
+    messageContainerHeaderBack = undefined;
+    isLastMessageMineBack = undefined;
+    lastDateBack = undefined;
+    messages.length = 0;
+    noOlderMessages = false;
+    loadingOlderMessages = false;
+};
 
 const sendTextMessage = (messageText) => {
     const message = new Message(messageText, "text", me, undefined, undefined);
@@ -250,6 +266,22 @@ const appendMessage = (message) => {
     messages.push(message)
 }
 
+const updateChannelLastMessage = (message) => {
+    activeChannel.lastMessageDate = message.date;
+    document.querySelector("#channel-" + activeChannel.uuid + " .chat-last-message-time").innerText = formatDateToLocalDateTime(message.date);
+    
+    channelLastMessageTimeUpdated = true;
+
+    let lastWordsText = "";
+    let username = userIsMe(message.user) ? "<span style='opacity: 0.5'>You:</span>" : "";
+    if(message.type == "text") lastWordsText = username + " " + message.content.slice(0, 30).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    else if(message.type == "emoji") lastWordsText = username + " &#" + message.content + ";";
+    else return;
+
+    document.querySelector("#channel-" + activeChannel.uuid + " .chat-last-message").innerHTML = lastWordsText;
+    activeChannel.lastWords = lastWordsText;
+}
+
 const createMessageContainer = (isMine) => {
     const article = document.createElement('article');
     const messageContainer = document.createElement('div');
@@ -322,14 +354,14 @@ const getOlderMessages = async () => {
 
     const articleIdToRemove = "date-article-" + formatDateToDDMMYYYY(decryptedMessages[0].date);
     const timeArticleToRemove = document.getElementById(articleIdToRemove);
-    if(timeArticleToRemove) timeArticleToRemove.remove();
+    if (timeArticleToRemove) timeArticleToRemove.remove();
 
     decryptedMessages.reverse().forEach(m => {
         prependMessage(m);
     });
 
     const l = decryptedMessages.length;
-    if(l < 20) noOlderMessages = true;
+    if (l < 20) noOlderMessages = true;
 
     for (i = 0; i < l; i++)
         messages.unshift(decryptedMessages.pop());

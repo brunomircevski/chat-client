@@ -13,13 +13,15 @@ class Invite {
 }
 
 class Channel {
-    constructor(uuid, accessKey, encryptionKey, users, serverAddress, active) {
+    constructor(uuid, accessKey, encryptionKey, users, serverAddress, active, lastMessageDate, lastWords) {
         this.uuid = uuid;
         this.encryptionKey = encryptionKey;
         this.accessKey = accessKey;
         this.users = users;
         this.serverAddress = serverAddress;
         this.active = active;
+        this.lastMessageDate = lastMessageDate;
+        this.lastWords = lastWords;
     }
 
     #name
@@ -94,13 +96,17 @@ const toChannel = (obj) => {
             users.push(toUser(usr));
         });
 
+        const date = obj.lastMessageDate ? new Date(obj.lastMessageDate) : undefined;
+
         const channel = new Channel(
             obj.uuid,
             obj.accessKey, 
             obj.encryptionKey, 
             users, 
             obj.serverAddress, 
-            obj.active
+            obj.active,
+            date,
+            obj.lastWords
         );
 
         return channel;

@@ -27,7 +27,7 @@ const addChannel = (channel) => {
 
 const saveUserdata = () => {
     const channelsToSave = channels.map(channel => {
-        return new Channel(channel.uuid ,channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined);
+        return new Channel(channel.uuid ,channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined, channel.lastMessageDate, channel.lastWords);
     });
 
     let userdata = {
@@ -98,11 +98,11 @@ const displayChannels = () => {
 
         const lastMessageTime = document.createElement("span");
         lastMessageTime.classList.add("chat-last-message-time");
-        lastMessageTime.textContent = "24/03/2023"; //Change
+        lastMessageTime.textContent = formatDateToLocalDateTime(channel.lastMessageDate);
 
         const lastMessage = document.createElement("span");
         lastMessage.classList.add("chat-last-message");
-        lastMessage.textContent = "This is newest message that should be shortened because it's too long"; //Change
+        lastMessage.innerHTML = channel.lastWords;
 
         // Append elements to the structure
         imgBox.appendChild(img);
