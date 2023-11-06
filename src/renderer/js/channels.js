@@ -98,11 +98,11 @@ const displayChannels = () => {
 
         const lastMessageTime = document.createElement("span");
         lastMessageTime.classList.add("chat-last-message-time");
-        lastMessageTime.textContent = formatDateToLocalDateTime(channel.lastMessageDate);
+        lastMessageTime.textContent = channel.lastMessageDate ? formatDateToLocalDateTime(channel.lastMessageDate) : "NEW";
 
         const lastMessage = document.createElement("span");
         lastMessage.classList.add("chat-last-message");
-        lastMessage.innerHTML = channel.lastWords;
+        lastMessage.innerHTML = channel.lastWords ? channel.lastWords : "No messages yet";
 
         // Append elements to the structure
         imgBox.appendChild(img);

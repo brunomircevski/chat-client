@@ -6,6 +6,7 @@ const chatTitle = document.getElementById("chat-title");
 const chatSubTitle = document.getElementById("chat-subtitle");
 
 let channelLastMessageTimeUpdated = false;
+let removeNoMessagesInfo = false;
 
 const switchToChannel = async (channel) => {
     if (loading || channel === activeChannel) return;
@@ -35,13 +36,15 @@ const switchToChannel = async (channel) => {
     if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1];
 
-        if(activeChannel.lastMessageDate.getTime() != lastMessage.date.getTime()) {
+        if(activeChannel.lastMessageDate?.getTime() != lastMessage.date.getTime()) {
             activeChannel.lastMessageDate = lastMessage.date;
             updateChannelLastMessage(lastMessage);
         }
     }
 
     chathub.connect(channel.serverAddress, channel.accessKey);
+
+    if(messages.length == 0) showNoMessagesInfo()
 
     loading = false;
 }
@@ -264,6 +267,8 @@ const appendMessage = (message) => {
     if (forceScroll) scrollToBottom();
 
     messages.push(message)
+    
+    if(removeNoMessagesInfo) document.getElementById("no-messages-h2")?.remove();
 }
 
 const updateChannelLastMessage = (message) => {
@@ -470,4 +475,13 @@ const createMessageContainerBack = (isMine) => {
     article.appendChild(messageContainer);
     messagesBoxBack.appendChild(article);
     messageContainerHeaderBack = messageContainer;
+}
+
+const showNoMessagesInfo = () => {
+    const h2 = document.createElement("h2");
+    h2.id = "no-messages-h2";
+    h2.innerText = "There are no messages yet";
+    messagesBox.appendChild(h2);
+
+    removeNoMessagesInfo = true;
 }
