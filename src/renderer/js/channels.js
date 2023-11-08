@@ -117,3 +117,9 @@ const displayChannels = () => {
         channelBox.appendChild(article);
     });
 }
+
+//Leaving channel
+
+const leaveActiveChannel = () => {
+    console.log("Leaving channel") // TODO
+}

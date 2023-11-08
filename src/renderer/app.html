@@ -111,9 +111,9 @@
               </div>
             </article>
           -->
-          <h2 id="no-chat-selected">
-            No chat selected
-          </h2>
+            <h2 id="no-chat-selected">
+              No chat selected
+            </h2>
           </div>
         </div>
         <div class="row message-input-box position-absolute bottom-0">
@@ -178,7 +178,19 @@
         </div>
       </div>
       <div class="overlay-content display-none" id="settings-overlay">
-        <h2 class="h2 text-center">Settings</h2>
+        <div id="chat-settings" class="display-none mb-5">
+          <h2 class="h2 text-center">Chat settings</h2>
+          <div class="settings-container">
+            <div class="chat-details">
+              Name: <span id="settings-chat-name"></span><br>
+              Server: <span id="settings-chat-server"></span><br>
+              Chat id: <span id="settings-chat-id"></span><br><br>
+              <input type="button" value="Leave" class="btn btn-outline-danger" id="leave-chat-btn">
+              <span style="margin-left: 10px;" id="leave-chat-text">All messages will be deleted.</span>
+            </div>
+          </div>
+        </div>
+        <h2 class="h2 text-center">Account settings</h2>
         <div class="settings-container">
           <div class="account-details">
             Name: <span id="account-name"></span><br>

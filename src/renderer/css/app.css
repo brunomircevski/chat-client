@@ -311,7 +311,7 @@ body {
     color: white;
 }
 
-.account-details {
+.settings-container .account-details, .settings-container .chat-details {
     font-size: 1.1rem;
     margin-bottom: 20px;
     color: var(--text-muted)
