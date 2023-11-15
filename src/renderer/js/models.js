@@ -13,7 +13,7 @@ class Invite {
 }
 
 class Channel {
-    constructor(uuid, accessKey, encryptionKey, users, serverAddress, active, lastMessageDate, lastWords) {
+    constructor(uuid, accessKey, encryptionKey, users, serverAddress, active, lastMessageDate, lastWords, name) {
         this.uuid = uuid;
         this.encryptionKey = encryptionKey;
         this.accessKey = accessKey;
@@ -22,6 +22,7 @@ class Channel {
         this.active = active;
         this.lastMessageDate = lastMessageDate;
         this.lastWords = lastWords;
+        this.customName = name;
     }
 
     #name
@@ -29,6 +30,7 @@ class Channel {
     #number
 
     getName = () => {
+        if(this.customName) return this.customName;
         if(this.#name) return this.#name;
 
         let name = "";
@@ -48,6 +50,11 @@ class Channel {
         if(this.#letter) return this.#letter;
         this.#letter = this.getName().slice(0, 1).toUpperCase();
         return this.#letter;
+    }
+
+    resetLetterNumber = () => {
+        this.#letter = undefined;
+        this.#number = undefined;
     }
 
     getNumber = () => {
@@ -106,7 +113,8 @@ const toChannel = (obj) => {
             obj.serverAddress, 
             obj.active,
             date,
-            obj.lastWords
+            obj.lastWords,
+            obj.customName
         );
 
         return channel;

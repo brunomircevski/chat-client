@@ -27,6 +27,11 @@ const sentInvitesTable = document.querySelector('#invites-table');
 
 const updateInvitesOverlay = () => {
 
+    const rows = sentInvitesTable.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        row.parentNode.removeChild(row);
+    });
+
     //Repopulate table
     sentInvites.forEach(invite => {
         appendRowToInvitesTable(invite);
@@ -36,9 +41,7 @@ const updateInvitesOverlay = () => {
 
 const updateInvitesStatus = async () => {
 
-    //Clean table
     const rows = sentInvitesTable.querySelectorAll('tbody tr');
-
     rows.forEach(row => {
         row.parentNode.removeChild(row);
     });

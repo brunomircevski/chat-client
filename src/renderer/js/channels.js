@@ -27,7 +27,7 @@ const addChannel = (channel) => {
 
 const saveUserdata = () => {
     const channelsToSave = channels.map(channel => {
-        return new Channel(channel.uuid ,channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined, channel.lastMessageDate, channel.lastWords);
+        return new Channel(channel.uuid ,channel.accessKey, channel.encryptionKey, channel.users, channel.serverAddress, undefined, channel.lastMessageDate, channel.lastWords, channel.customName);
     });
 
     let userdata = {
@@ -120,6 +120,36 @@ const displayChannels = () => {
 
 //Leaving channel
 
-const leaveActiveChannel = () => {
-    console.log("Leaving channel") // TODO
+const leaveActiveChannel = async () => {
+    if(activeChannel == null) return;
+    await leaveChannel(activeChannel);
+
+    const indexToRemove = channels.findIndex(x => x.uuid === activeChannel.uuid);
+    if (indexToRemove !== -1) channels.splice(indexToRemove, 1);
+
+    chathub.disconnect();
+    channelReset();
+    saveUserdata();
+    displayChannels();
+    activeChannel = null;
+}
+
+const leaveChannel = (channel) => {
+    return new Promise(resolve => {
+        fetch(channel.serverAddress + "api/channel?" + new URLSearchParams({
+            accessKey: channel.accessKey
+        }), {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.status == 200) resolve(true);
+            else resolve(false);
+        }).catch(e => {
+            console.log(e);
+            resolve(false);
+        });
+    });
 }

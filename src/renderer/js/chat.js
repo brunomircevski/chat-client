@@ -20,18 +20,22 @@ const switchToChannel = async (channel) => {
 
     channelReset();
 
+    const selectedChannelArticle = document.getElementsByClassName("channel-active")[0];
+    if (selectedChannelArticle) selectedChannelArticle.classList.remove("channel-active");
+    document.getElementById("channel-" + channel.uuid).classList.add("channel-active");
+
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
+    if(encryptedMessagesRes == 404) {
+        channelNotFound();
+        loading = false;
+        return;
+    }
     const decryptedMessages = await decryptChannelMessages(encryptedMessagesRes.messages);
     displayMessages(decryptedMessages);
 
     sendMessageInput.disabled = false;
     openEmojisBtn.disabled = false;
     sendMessageBtn.disabled = false;
-
-    const selectedChannelArticle = document.getElementsByClassName("channel-active")[0];
-    if (selectedChannelArticle) selectedChannelArticle.classList.remove("channel-active");
-
-    document.getElementById("channel-" + channel.uuid).classList.add("channel-active");
 
     if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1];
@@ -117,12 +121,12 @@ const getEncryptedChannelMessages = (channel, olderThanUuid = "") => {
                 'Authorization': 'bearer ' + jwt
             }
         }).then(response => {
-            if (response.status != 200) resolve(null);
-            else {
+            if (response.status == 404) resolve(404);
+            else if (response.status == 200) {
                 response.json().then(res => {
                     resolve(res);
                 });
-            }
+            } else resolve(null);
         }).catch(e => {
             console.log(e);
             resolve(null);
@@ -477,11 +481,28 @@ const createMessageContainerBack = (isMine) => {
     messageContainerHeaderBack = messageContainer;
 }
 
+// Display errors
+
 const showNoMessagesInfo = () => {
     const h2 = document.createElement("h2");
-    h2.id = "no-messages-h2";
+    h2.id = "no-messages-h";
     h2.innerText = "There are no messages yet";
     messagesBox.appendChild(h2);
+
+    removeNoMessagesInfo = true;
+}
+
+const channelNotFound = () => {
+    const h2 = document.createElement("h2");
+    h2.id = "no-messages-h";
+    h2.innerText = "Chat not found :(";
+
+    const h5 = document.createElement("h5");
+    h5.id = "no-messages-h";
+    h5.innerText = "It might have been deleted. To leave it go to settings.";
+
+    messagesBox.appendChild(h2);
+    messagesBox.appendChild(h5);
 
     removeNoMessagesInfo = true;
 }

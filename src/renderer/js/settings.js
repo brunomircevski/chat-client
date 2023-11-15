@@ -6,11 +6,17 @@ const settingsAcceptsInvitesCheckbox = document.getElementById("accepts-invites-
 
 const settingsChatBox = document.getElementById("chat-settings");
 const settingsChatName = document.getElementById("settings-chat-name");
+const settingsChatUsers = document.getElementById("settings-chat-users");
 const settingsChatId = document.getElementById("settings-chat-id");
 const settingsChatServer = document.getElementById("settings-chat-server");
 
+const chatNameInput = document.getElementById("chat-name-input");
+const chatNameForm = document.getElementById("chat-name-form");
+
 const leaveChatBtn = document.getElementById("leave-chat-btn");
 const leaveChatText = document.getElementById("leave-chat-text");
+
+const resetAppBtn = document.getElementById("reset-app-btn");
 
 let settings;
 let leaveChatConfirm = false;
@@ -23,8 +29,10 @@ settingsBtn.addEventListener("click", async (e) => {
     if(activeChannel) {
         settingsChatBox.classList.remove("display-none");
         settingsChatName.innerText = activeChannel.getName();
+        chatNameInput.value = activeChannel.getName();
         settingsChatId.innerText = activeChannel.uuid;
         settingsChatServer.innerText = activeChannel.serverAddress;
+        displayUsersInChat();
     }
     else settingsChatBox.classList.add("display-none");
 
@@ -43,6 +51,14 @@ const displayUserSettings = () => {
     settingsUserId.innerText = settings.uuid;
     settingsAcceptsInvitesCheckbox.checked = settings.acceptsInvites;
     settingsAcceptsInvitesCheckbox.disabled = false;
+}
+
+const displayUsersInChat = () => {
+    let string = "";
+    activeChannel.users.forEach(user => {
+        string += user.toAddress() + ", ";
+    });
+    settingsChatUsers.innerText = string.slice(0, -2);
 }
 
 const getSettings = () => {
@@ -90,16 +106,31 @@ settingsAcceptsInvitesCheckbox.addEventListener("change", () => {
 
 leaveChatBtn.addEventListener("click", () => {
     if(!leaveChatConfirm) {
-        leaveChatBtn.value = "Click after 5 seconds to confirm";
+        leaveChatBtn.value = "Click after 3 seconds to confirm";
         leaveChatText.classList.add("display-none");
         leaveChatBtn.disabled = true;
         leaveChatConfirm = true;
         setTimeout(() => {
             leaveChatBtn.disabled = false;
             leaveChatBtn.value = "Click to leave this chat";
-        }, 5000);
+        }, 3000);
     } else {
         hideOverlays();
         leaveActiveChannel();
     }
 })
+
+resetAppBtn.addEventListener("click", () => {
+    store.clear();
+    sessionStorage.clear();
+    window.location.href = 'setup.html';
+})
+
+chatNameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    activeChannel.customName = chatNameInput.value;
+    chatTitle.innerText = activeChannel.getName();
+    activeChannel.resetLetterNumber();
+    displayChannels();
+    saveUserdata();
+});

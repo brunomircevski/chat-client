@@ -327,7 +327,7 @@ body {
     line-height: 34px !important;
 }
 
-#no-messages-h2, #no-chat-selected {
+#no-messages-h, #no-chat-selected {
     color: var(--text-very-muted);
     opacity: 0.7;
     text-align: center;
@@ -353,6 +353,7 @@ body {
     width: 80%;
     margin-top: 80px;
     min-height: 400px;
+    max-height: 75vh;
     padding: 20px;
     border-radius: 5px;
     overflow: auto;
@@ -375,13 +376,13 @@ body {
     margin: 20px auto;
 }
 
-#invites-overlay .add-chat-form form input {
+#invites-overlay .add-chat-form form input, #chat-name-input {
     width: calc(100% - 110px);
     display: inline;
     border: 1px solid var(--border-lighter);
 }
 
-#invites-overlay .add-chat-form form button {
+#invites-overlay .add-chat-form form button, #chat-name-btn {
     width: 90px;
     margin-left: 10px;
     display: inline;
