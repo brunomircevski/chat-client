@@ -132,7 +132,7 @@ const generateKeysAsync = async () => {
     fourthStepBtn.disabled = false;
 };
 
-fourthStepBtn.addEventListener("click", () => {
+fourthStepBtn.addEventListener("click", async () => {
 
     const username = usernameInput.value.trim();
 
@@ -152,8 +152,10 @@ fourthStepBtn.addEventListener("click", () => {
     fourthStepErrorMsg.style.opacity = "0";
     fourthStepBtn.disabled = true;
 
+    const challenge = await getChallenge(username);
+
     const md = forge.md.sha256.create();
-    md.update(username, 'utf8');
+    md.update(challenge, 'utf8');
     const signature = privateKeyTmp.sign(md);
     const signatureBase64 = forge.util.encode64(signature);
 

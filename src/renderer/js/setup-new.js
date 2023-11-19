@@ -104,6 +104,7 @@ const generateKeysAsync = async () => {
     if (!bip39.validateMnemonic(mnemonic)) {
         fifthStepErrorMsg.style.opacity = '1';
         fifthStepErrorMsg.innerText = 'Error. Could not generate keys.';
+        return;
     }
 
     const seed = (await bip39.mnemonicToSeed(mnemonic)).toString('hex');
@@ -113,11 +114,8 @@ const generateKeysAsync = async () => {
 
     const { privateKey, publicKey } = await new Promise(resolve => {
         forge.pki.rsa.generateKeyPair({ bits: 2048, prng, workers: 2 }, (err, keyPair) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(keyPair)
-            }
+            if (err) reject(err);
+            else resolve(keyPair);
         })
     })
 

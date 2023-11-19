@@ -79,14 +79,17 @@ firstStepBtn.addEventListener("click", async () => {
     getToken();
 });
 
-const getToken = () => {
+const getToken = async () => {
     const privateKeyPem = window.sessionStorage.getItem('privateKey');
     const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
 
-    deriveSymmetricKey(privateKey);
+    const symmetricKey = deriveSymmetricKey(privateKey);
+    window.sessionStorage.setItem('symmetricKey', symmetricKey);
+
+    const challenge = await getChallenge(username);
 
     const md = forge.md.sha256.create();
-    md.update(username, 'utf8');
+    md.update(challenge, 'utf8');
     const signature = privateKey.sign(md);
     const signatureBase64 = forge.util.encode64(signature);
     
@@ -127,7 +130,7 @@ const deriveSymmetricKey = (privateKey) => {
     const privateKeyDer = forge.asn1.toDer(forge.pki.privateKeyToAsn1(privateKey)).getBytes();
     const hkdf = forge.pkcs5.pbkdf2(privateKeyDer, '', 1, 32, 'sha256');
 
-    window.sessionStorage.setItem('symmetricKey', hkdf);
+    return hkdf;
 }
 
 const getUserData = async () => {
