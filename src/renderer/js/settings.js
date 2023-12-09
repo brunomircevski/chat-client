@@ -16,10 +16,13 @@ const chatNameForm = document.getElementById("chat-name-form");
 const leaveChatBtn = document.getElementById("leave-chat-btn");
 const leaveChatText = document.getElementById("leave-chat-text");
 
+const deleteAccountBtn = document.getElementById("delete-account-btn");
+const deleteAccountText = document.getElementById("delete-account-text");
+
 const resetAppBtn = document.getElementById("reset-app-btn");
 
 let settings;
-let leaveChatConfirm = false;
+let leaveChatConfirm = false, deleteAccountConfirm = false;
 
 settingsBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -39,6 +42,10 @@ settingsBtn.addEventListener("click", async (e) => {
     leaveChatText.classList.remove("display-none");
     leaveChatBtn.value = "Leave";
     leaveChatConfirm = false;
+
+    deleteAccountText.classList.remove("display-none");
+    deleteAccountBtn.value = "Delete account";
+    deleteAccountConfirm = false;
 
     if (settings) return;
     settings = await getSettings();
@@ -134,3 +141,41 @@ chatNameForm.addEventListener("submit", (e) => {
     displayChannels();
     saveUserdata();
 });
+
+deleteAccountBtn.addEventListener("click", () => {
+    if(!deleteAccountConfirm) {
+        deleteAccountBtn.value = "Click after 3 seconds to confirm";
+        deleteAccountText.classList.add("display-none");
+        deleteAccountBtn.disabled = true;
+        deleteAccountConfirm = true;
+        setTimeout(() => {
+            deleteAccountBtn.disabled = false;
+            deleteAccountBtn.value = "Click to delete your account";
+        }, 3000);
+    } else {
+        hideOverlays();
+        delateAccount();
+    }
+})
+
+const delateAccount = () => {
+    
+    fetch(url + "api/auth/account", {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer ' + jwt
+        }
+    }).then(response => {
+        if (response.status == 200) {
+            store.clear();
+            sessionStorage.clear();
+            window.location.href = 'setup.html';
+        } else {
+            console.log("Could not delete account")
+        }
+    }).catch(e => {
+        console.log(e);
+    });
+}
