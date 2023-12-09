@@ -48,4 +48,4 @@ serverAddressInput.addEventListener('focus', () => {
     errorMsg.style.opacity = "0";
 });
 
-serverAddressInput.value = store.get('serverAddress') || "http://localhost:5244/"; //TEMP
+serverAddressInput.value = store.get('serverAddress') || "";

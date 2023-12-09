@@ -25,7 +25,7 @@ const switchToChannel = async (channel) => {
     document.getElementById("channel-" + channel.uuid).classList.add("channel-active");
 
     const encryptedMessagesRes = await getEncryptedChannelMessages(activeChannel);
-    if(encryptedMessagesRes == 404) {
+    if (encryptedMessagesRes == 404) {
         channelNotFound();
         loading = false;
         return;
@@ -40,7 +40,7 @@ const switchToChannel = async (channel) => {
     if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1];
 
-        if(activeChannel.lastMessageDate?.getTime() != lastMessage.date.getTime()) {
+        if (activeChannel.lastMessageDate?.getTime() != lastMessage.date.getTime()) {
             activeChannel.lastMessageDate = lastMessage.date;
             updateChannelLastMessage(lastMessage);
         }
@@ -48,7 +48,7 @@ const switchToChannel = async (channel) => {
 
     chathub.connect(channel.serverAddress, channel.accessKey);
 
-    if(messages.length == 0) showNoMessagesInfo()
+    if (messages.length == 0) showNoMessagesInfo()
 
     loading = false;
 }
@@ -83,16 +83,14 @@ const sendMessage = (message) => {
     if (!activeChannel.accessKey) return;
 
     const messageJSON = JSON.stringify(message);
-    //console.log(message, messageJSON);
 
     const encryptedJSON = aes256.encrypt(activeChannel.encryptionKey, messageJSON);
 
-    fetch(url + "api/message", {
+    fetch(activeChannel.serverAddress + "api/message", {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'bearer ' + jwt
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({ content: encryptedJSON, channelAccessKey: activeChannel.accessKey })
 
@@ -221,6 +219,15 @@ const appendMessage = (message) => {
 
     const messageDiv = document.createElement('div');
 
+    messageDiv.id = 'message-' + message.uuid;
+
+    if (isMessageMine) {
+        messageDiv.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            handleMessageClick(message);
+        });
+    }
+
     if (message.type == "text") {
 
         messageDiv.className = 'message';
@@ -271,20 +278,20 @@ const appendMessage = (message) => {
     if (forceScroll) scrollToBottom();
 
     messages.push(message)
-    
-    if(removeNoMessagesInfo) document.getElementById("no-messages-h2")?.remove();
+
+    if (removeNoMessagesInfo) document.getElementById("no-messages-h2")?.remove();
 }
 
 const updateChannelLastMessage = (message) => {
     activeChannel.lastMessageDate = message.date;
     document.querySelector("#channel-" + activeChannel.uuid + " .chat-last-message-time").innerText = formatDateToLocalDateTime(message.date);
-    
+
     channelLastMessageTimeUpdated = true;
 
     let lastWordsText = "";
     let username = userIsMe(message.user) ? "<span style='opacity: 0.5'>You:</span>" : "";
-    if(message.type == "text") lastWordsText = username + " " + message.content.slice(0, 30).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    else if(message.type == "emoji") lastWordsText = username + " &#" + message.content + ";";
+    if (message.type == "text") lastWordsText = username + " " + message.content.slice(0, 30).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    else if (message.type == "emoji") lastWordsText = username + " &#" + message.content + ";";
     else return;
 
     document.querySelector("#channel-" + activeChannel.uuid + " .chat-last-message").innerHTML = lastWordsText;
@@ -401,6 +408,7 @@ const prependMessage = (message) => {
     isLastMessageMineBack = isMessageMine;
 
     const messageDiv = document.createElement('div');
+    messageDiv.id = 'message-' + message.uuid;
 
     if (message.type == "text") {
 
@@ -505,4 +513,37 @@ const channelNotFound = () => {
     messagesBox.appendChild(h5);
 
     removeNoMessagesInfo = true;
+}
+
+//Delete message
+let lastClicked;
+let deleteTimeout;
+
+const handleMessageClick = (message) => {
+    clearTimeout(deleteTimeout);
+    if (lastClicked == message.uuid) deleteMessage(message.uuid);
+    else lastClicked = message.uuid;
+    deleteTimeout = setTimeout(() => { lastClicked = null }, 200);
+}
+
+const deleteMessage = (uuid) => {
+    fetch(activeChannel.serverAddress + "api/message?" + new URLSearchParams({
+        accessKey: activeChannel.accessKey,
+        uuid: uuid
+    }), {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.status != 200) console.log("Could not delete message");
+    }).catch(e => {
+        console.log(e);
+    });
+}
+
+const deleteMessageDiv = (uuid) => {
+    const messageDiv = document.getElementById("message-" + uuid);
+    if(messageDiv) messageDiv.remove();
 }

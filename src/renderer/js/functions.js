@@ -22,7 +22,7 @@ const getUserFromAddress = (address) => {
             return null;
         }
         username = arr[0];
-        serverAddress = 'http://' + arr[1] + '/';
+        serverAddress = 'https://' + arr[1] + '/';
 
     } else {
         username = address;

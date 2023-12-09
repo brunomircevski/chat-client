@@ -52,6 +52,10 @@ class Chathub {
             if(message != null) appendMessage(message);
             updateChannelLastMessage(message);
         });
+
+        this.#connection.on("RemovedMessage", data => {
+            deleteMessageDiv(data)
+        });
     }
 }
 
