@@ -13,6 +13,8 @@ const privateKeyDecrypt64 = (message64) => {
     return privateKey.decrypt(message, 'RSA-OAEP');
 };
 
+const ipAddressRegex = /^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}(:\d+)?$/;
+
 const getUserFromAddress = (address) => {
     let username, serverAddress;
 
@@ -22,7 +24,8 @@ const getUserFromAddress = (address) => {
             return null;
         }
         username = arr[0];
-        serverAddress = 'https://' + arr[1] + '/';
+        if(ipAddressRegex.test(arr[1])) serverAddress = 'http://' + arr[1] + '/';
+        else serverAddress = 'https://' + arr[1] + '/';
 
     } else {
         username = address;

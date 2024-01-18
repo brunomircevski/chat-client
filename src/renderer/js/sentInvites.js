@@ -69,7 +69,7 @@ const updateInvitesStatus = async () => {
 const checkAndProcessInvite = (invite) => {
     let channelActive = false, error = false;
 
-    fetch(invite.user.serverAddress + "api/channel/status?" + new URLSearchParams({
+    fetch(invite.channel.serverAddress + "api/channel/status?" + new URLSearchParams({
         accessKey: invite.channel.accessKey
     }), {
         method: 'GET',
